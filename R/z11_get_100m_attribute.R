@@ -9,7 +9,7 @@
 #' \code{z11::z11_list_100m_attributes}
 #' @param as_raster logical; shall the attribute be returned as raster or sf
 #' object
-#' @param data_location character string; location of the downloaded census data
+#' @param data_source character string; location of the downloaded census data
 #' from https://github.com/StefanJuenger/z11data; default is NULL - data are
 #' downloaded from the internet
 #'
@@ -21,29 +21,30 @@
 #' @importFrom dplyr bind_cols
 #'
 #' @export
-z11_get_100m_attribute <-
-  function(attribute, geometry = TRUE, as_raster = TRUE, data_location = NULL) {
 
-  attribute <- rlang::enquo(attribute) %>% rlang::as_label()
+# Generic function
+setGeneric("z11_get_100m_attribute",
+           function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
+             standardGeneric("z11_get_100m_attribute")
+           }
+)
 
-  # Load data in session
-  if (is.null(data_location)) {
-  requested_attribute <-
-    paste0(
-      "https://github.com/StefanJuenger/z11data/raw/main/100m/",
-      attribute,
-      ".rds"
-    ) %>%
-    url("rb") %>%
-    readRDS()
-  } else {
-    requested_attribute <-
-      file.path(data_location, "/100m/", paste0(attribute, ".rds")) %>%
-      readRDS()
-  }
+# Method for DBI Connection
+setMethod("z11_get_100m_attribute",
+  signature(data_source = "DBIConnection"),
+  function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
+    # Get attribute from database
+    message("Fetch attribute from database...")
+    table <- switch(substring(attribute, 1, 3),
+                    Ein = "bevoelkerung100m", DEM = "demographie100m", HAU = "haushalte100m",
+                    FAM = "familien100m", GEB = "gebaeude100m", WOH = "wohnungen100m")
+    query <- sprintf('SELECT "Gitter_ID_100m", "%s" FROM %s WHERE "%s" IS NOT NULL;', attribute, table, attribute)
+    res <- DBI::dbSendQuery(con, query)
+    requested_attribute <- DBI::dbFetch(res)
+    DBI::dbClearResult(res)
 
-  # Extract coordinates from inspire ID
-  if (isTRUE(geometry)) {
+    # Extract coordinates from inspire ID
+    message("Extract coordinates from inspire ID...")
     requested_attribute <- requested_attribute %>%
       dplyr::bind_cols(
         z11_extract_inspire_coordinates(.$Gitter_ID_100m)
@@ -52,13 +53,55 @@ z11_get_100m_attribute <-
 
     #Transform to raster
     if (isTRUE(as_raster)) {
+      message("Transform to raster...")
       requested_attribute <- requested_attribute %>%
         stars::st_rasterize(dx = 100, dy = 100) %>%
         as("Raster")
     }
-  }
 
-  return(requested_attribute)
-}
+    return(requested_attribute)
+  }
+)
+
+# Method for any class
+setMethod("z11_get_100m_attribute",
+  signature(data_source = "ANY"),
+  function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
+
+    # Load data in session
+    if (is.null(data_source)) {
+    requested_attribute <-
+      paste0(
+        "https://github.com/StefanJuenger/z11data/raw/main/100m/",
+        attribute,
+        ".rds"
+      ) %>%
+      url("rb") %>%
+      readRDS()
+    } else {
+      requested_attribute <-
+        file.path(data_source, "/100m/", paste0(attribute, ".rds")) %>%
+        readRDS()
+    }
+
+    # Extract coordinates from inspire ID
+    if (isTRUE(geometry)) {
+      requested_attribute <- requested_attribute %>%
+        dplyr::bind_cols(
+          z11_extract_inspire_coordinates(.$Gitter_ID_100m)
+        ) %>%
+        sf::st_as_sf(coords = c("X", "Y"), crs = 3035)
+
+      #Transform to raster
+      if (isTRUE(as_raster)) {
+        requested_attribute <- requested_attribute %>%
+          stars::st_rasterize(dx = 100, dy = 100) %>%
+          as("Raster")
+      }
+    }
+
+    return(requested_attribute)
+  }
+)
 
 

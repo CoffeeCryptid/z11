@@ -14,41 +14,83 @@
 #' @importFrom data.table data.table setDT setnames
 #'
 #' @export
-z11_simple_join_100m_attribute <-
-  function(
-    data,
-    inspire_column,
-    attribute,
-    all = FALSE,
-    ...
-  ) {
 
-    inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_label()
+# Generic function
+setGeneric("z11_simple_join_100m_attribute",
+           function(df, inspire_column, data_source = NULL, attributes = NULL) {
+             standardGeneric("z11_simple_join_100m_attribute")
+           }
+)
 
-    if (isFALSE(all)) {
-      attribute <- rlang::enquo(attribute)
+# Method for DBI Connection
+setMethod("z11_simple_join_100m_attribute",
+  signature(data_source = "DBIConnection"),
+  function(df, inspire_column, data_source, attributes) {
+    message("Prepare for joining...")
+    input <- data.frame(Gitter_ID_100m = df[[inspire_column]])
 
+    DBI::dbWriteTable(data_source, "temp", input, temporary = TRUE, overwrite = TRUE)
+
+    message("Join data...")
+    if (is.null(attributes)) {
+      #Join all 100m variables
+      query <- 'SELECT * FROM temp
+      LEFT JOIN bevoelkerung100m USING ("Gitter_ID_100m")
+      LEFT JOIN demographie100m USING ("Gitter_ID_100m")
+      LEFT JOIN haushalte100m USING ("Gitter_ID_100m")
+      LEFT JOIN familien100m USING ("Gitter_ID_100m")
+      LEFT JOIN gebaeude100m USING ("Gitter_ID_100m")
+      LEFT JOIN wohnungen100m USING ("Gitter_ID_100m");'
+    } else {
+      # Only join select 100m variables
+      tables <- vapply(substring(attributes, 1, 3), FUN.VALUE =  character(1),
+                       function(x) switch(x, Ein = "bevoelkerung100m", DEM = "demographie100m", HAU = "haushalte100m",
+                                          FAM = "familien100m", GEB = "gebaeude100m", WOH = "wohnungen100m"))
+      tables_query <- paste("LEFT JOIN", unique(tables), 'USING ("Gitter_ID_100m")', sep = " ", collapse = "\n")
+      vars_query <- paste(attributes, collapse = '", "')
+      query <- sprintf('SELECT "Gitter_ID_100m", "%s" FROM temp %s;', vars_query, tables_query)
+    }
+
+    res <- DBI::dbSendQuery(data_source, query)
+    output <- DBI::dbFetch(res) %>%
+      dplyr::select(-Gitter_ID_100m)
+    DBI::dbClearResult(res)
+
+    message("Done!")
+    return(
+      dplyr::bind_cols(df, output)
+    )
+  }
+)
+
+#Method for other classes
+setMethod("z11_simple_join_100m_attribute",
+  signature(data_source = "ANY"),
+  function(df, inspire_column, data_source, attributes) {
+
+    #Only one attribute
+    if (length(attributes == 1)) {
       #Get attribute data
-      attribute <- z11::z11_get_100m_attribute(!!attribute, geometry = FALSE, as_raster = FALSE, ...)
+      attribute <- z11::z11_get_100m_attribute(attributes, data_source, geometry = FALSE, as_raster = FALSE)
       data.table::setDT(attribute)
       data.table::setnames(attribute, old = "Gitter_ID_100m", inspire_column)
 
       #Merge
-      linked_data <- data.table::data.table(data) %>%
+      linked_data <- data.table::data.table(df) %>%
         merge(attribute, on = inspire_column, all.x = TRUE, sort = FALSE)
-    }
+    } else {
+      #Several attributes or all attributes
+      linked_data <- data.table(df)
 
-    if (isTRUE(all)) {
-      linked_data <- data.table(data)
+      #All attributes
+      if (is.null(attributes)) {attributes <- z11::z11_list_100m_attributes()}
 
-      for (i in z11::z11_list_100m_attributes()) {
+      for (i in attributes) {
 
         message(i)
 
-        attribute <- rlang::sym(i)
-
         #Get attribute data
-        attribute <- z11::z11_get_100m_attribute(!!attribute, geometry = FALSE, as_raster = FALSE, ...)
+        attribute <- z11::z11_get_100m_attribute(i, data_source, geometry = FALSE, as_raster = FALSE)
         data.table::setDT(attribute)
         data.table::setnames(attribute, old = "Gitter_ID_100m", new = inspire_column)
 
@@ -58,8 +100,6 @@ z11_simple_join_100m_attribute <-
     }
 
     return(linked_data)
-}
-
-
-
+  }
+)
 
