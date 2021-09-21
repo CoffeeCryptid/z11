@@ -7,7 +7,7 @@
 #' z11_prepare_data(file, data_location)
 #'
 #' @param file Path to a either a census .csv file or a directory where the .csv files are saved
-#' @param data_location A DBI Connection or a character string containing a path to the directory where the data should be saved.
+#' @param data_location A DBI connection or a character string containing a path to the directory where the data should be saved.
 #'
 #' @details
 #' The data files are very large and use a lot of RAM, so use with caution. Don't run other things in the background.
@@ -15,9 +15,15 @@
 #' @examples
 #' z11_prepare_data("/home/yourname/Haushalte100m.csv", "/home/yourname/z11data")
 #'
+#' con <- DBI::dbConnect(RSQLite::SQLite, "/home/yourname/z11data.sqlite3")
+#' z11_prepare_data("/home/yourname/census_data", con)
+#' DBI::dbDisconnect(con)
+#'
 #' @importFrom purrr walk
 #' @importFrom magrittr %>%
-#' @importFrom data.table fread setDT setnames
+#' @importFrom data.table fread setDT setnames setorder dcast
+#' @importFrom purrr walk
+#' @importFrom DBI dbWriteTable
 #'
 #' @export
 
@@ -29,7 +35,6 @@ z11_prepare_data <- function(file, data_location) {
       z11::z11_prepare_file(f, data_location)
       invisible(gc())
     }
-    #purrr::walk(files, ~z11_prepare_datafile(file = .x, directory = directory))
 
   } else if (file.exists(file)) {
     z11_prepare_datafile(file, data_location)

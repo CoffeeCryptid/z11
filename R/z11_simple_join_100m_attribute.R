@@ -2,16 +2,22 @@
 #'
 #' Merge input data with census 100m data by simple matching of INSPIRE IDs
 #'
-#' @param data input data
+#' @param df input data
 #' @param inspire_colum Character string for column name in input data
 #' containing the inspire ID
-#' @param attribute Name of the census variable which is aimed to be merged with
-#' input data (used for calling \code{z11::z11_get_100m_attribute()})
-#' @param all logical; should all census attributes be merged? default: `FALSE`
-#' @param ... arguments passed to \code{z11::z11_get_100m_attribute()}
+#' @param data_source Either a DBI connection, or a character string containing a
+#' file path to the data location
+#' @param attributes A character or character vector containing the name of the Census
+#' attribute to be merged with the input data. If no attribute name is given,
+#' all available attributes will be merged.
+#'
+#' @examples
+#' joined <- z11_simple_join_100m_attribute(df, "inspire_100m", con)
 #'
 #' @importFrom magrittr %>%
 #' @importFrom data.table data.table setDT setnames
+#' @importFrom DBI dbWriteTable dbSendQuery dbFetch dbClearResult
+#' @importFrom dplyr select bind_cols
 #'
 #' @export
 

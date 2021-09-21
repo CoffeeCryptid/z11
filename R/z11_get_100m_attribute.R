@@ -5,13 +5,16 @@
 #' (default) or you can return it as a `sf` tibble object with point
 #' geometries.
 #'
+#' @usage z11_get_100m_attribute(attribute, data_source, geometry = TRUE, as_raster = TRUE)
+#'
 #' @param attribute attribute name as definded in
 #' \code{z11::z11_list_100m_attributes}
+#' @param data_source Either a DBI connection or a character string containing
+#' a file path to the downloaded census data https://github.com/StefanJuenger/z11data;
+#' default is NULL - data are downloaded from the internet
+#' @param geometry logical; should coordinates be extracted from the INSPIRE ID?
 #' @param as_raster logical; shall the attribute be returned as raster or sf
 #' object
-#' @param data_source character string; location of the downloaded census data
-#' from https://github.com/StefanJuenger/z11data; default is NULL - data are
-#' downloaded from the internet
 #'
 #' @return Raster or sf
 #'
@@ -19,6 +22,7 @@
 #' @importFrom sf st_as_sf
 #' @importFrom stars st_rasterize
 #' @importFrom dplyr bind_cols
+#' @importFrom DBI dbSendQuery dbFetch dbClearResult
 #'
 #' @export
 

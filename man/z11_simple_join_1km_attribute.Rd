@@ -4,20 +4,15 @@
 \alias{z11_simple_join_1km_attribute}
 \title{Simple join of data with census 1 km attributes}
 \usage{
-z11_simple_join_1km_attribute(
-  df,
-  inspire_column,
-  data_source = NULL,
-  attributes = NULL
-)
+z11_simple_join_1km_attribute(df, inspire_column, data_source = NULL, attributes = NULL)
 }
 \arguments{
 \item{df}{input data}
 
-\item{data_source}{Either a DBI connection, or a string containing a
+\item{data_source}{Either a DBI connection, or a character string containing a
 file path to the data location}
 
-\item{attributes}{A string or string vector containing the name of the Census
+\item{attributes}{A character or character vector containing the name of the Census
 attribute to be merged with the input data. If no attribute name is given,
 all available attributes will be merged.}
 
@@ -26,4 +21,8 @@ containing the inspire ID}
 }
 \description{
 Merge input data with census 1 km data by simple matching of INSPIRE IDs
+}
+\examples{
+joined <- z11_simple_join_1km_attribute(df, "inspire_1km", con, c("Frauen_A", "Frauen_A_cat"))
+
 }

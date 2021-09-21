@@ -4,20 +4,17 @@
 \alias{z11_get_1km_attribute}
 \title{Retrieve 1km^2 attribute of the German Census 2011}
 \usage{
-z11_get_1km_attribute(
-  attribute,
-  data_source,
-  geometry = TRUE,
-  as_raster = TRUE
-)
+z11_get_1km_attribute(attribute, data_source, geometry = TRUE, as_raster = TRUE)
 }
 \arguments{
 \item{attribute}{attribute name as definded in
 \code{z11::z11_list_1km_attributes}}
 
-\item{data_source}{character string; location of the downloaded census data
-from https://github.com/StefanJuenger/z11data; default is NULL - data are
-downloaded from the internet}
+\item{data_source}{Either a DBI connection or a character string containing
+a file path to the downloaded census data https://github.com/StefanJuenger/z11data;
+default is NULL - data are downloaded from the internet}
+
+\item{geometry}{logical; should coordinates be extracted from the INSPIRE ID?}
 
 \item{as_raster}{logical; shall the attribute be returned as raster or sf
 object}
