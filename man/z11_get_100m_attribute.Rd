@@ -6,21 +6,21 @@
 \usage{
 z11_get_100m_attribute(
   attribute,
+  data_source,
   geometry = TRUE,
-  as_raster = TRUE,
-  data_location = NULL
+  as_raster = TRUE
 )
 }
 \arguments{
 \item{attribute}{attribute name as definded in
 \code{z11::z11_list_100m_attributes}}
 
-\item{as_raster}{logical; shall the attribute be returned as raster or sf
-object}
-
-\item{data_location}{character string; location of the downloaded census data
+\item{data_source}{character string; location of the downloaded census data
 from https://github.com/StefanJuenger/z11data; default is NULL - data are
 downloaded from the internet}
+
+\item{as_raster}{logical; shall the attribute be returned as raster or sf
+object}
 }
 \value{
 Raster or sf

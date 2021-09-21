@@ -5,22 +5,21 @@
 \title{Simple join of data with census 1 km attributes}
 \usage{
 z11_simple_join_1km_attribute(
-  data,
+  df,
   inspire_column,
-  attribute,
-  all = FALSE,
-  ...
+  data_source = NULL,
+  attributes = NULL
 )
 }
 \arguments{
-\item{data}{input data}
+\item{df}{input data}
 
-\item{attribute}{Name of the census variable which is aimed to be merged with
-input data (used for calling \code{z11::z11_get_1km_attribute()})}
+\item{data_source}{Either a DBI connection, or a string containing a
+file path to the data location}
 
-\item{all}{logical; should all census attributes be merged? default: `FALSE`}
-
-\item{...}{arguments passed to \code{z11::z11_get_1km_attribute()}}
+\item{attributes}{A string or string vector containing the name of the Census
+attribute to be merged with the input data. If no attribute name is given,
+all available attributes will be merged.}
 
 \item{inspire_colum}{Character string for column name in input data
 containing the inspire ID}

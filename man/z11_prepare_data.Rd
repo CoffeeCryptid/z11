@@ -4,12 +4,12 @@
 \alias{z11_prepare_data}
 \title{Data Preparation}
 \usage{
-z11_prepare_data(file, directory)
+z11_prepare_data(file, data_location)
 }
 \arguments{
 \item{file}{Path to a either a census .csv file or a directory where the .csv files are saved}
 
-\item{directory}{Path to the directory where the data should be saved.}
+\item{data_location}{A DBI Connection or a character string containing a path to the directory where the data should be saved.}
 }
 \description{
 Reads in 2011 Census .csv files, splits it into smaller chunks, and saves it locally.
