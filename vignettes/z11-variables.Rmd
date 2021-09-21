@@ -16,6 +16,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{css, echo=FALSE}
+td[colspan="2"], td[colspan="3"] {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+}
+```
+
 ## 1km Gitterzellen
 
 ```{r, message = FALSE, echo = FALSE}
