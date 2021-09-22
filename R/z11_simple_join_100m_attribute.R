@@ -74,35 +74,22 @@ setMethod("z11_simple_join_100m_attribute",
   signature(data_source = "ANY"),
   function(df, inspire_column, data_source, attributes) {
 
-    #Only one attribute
-    if (length(attributes == 1)) {
+    linked_data <- data.table(df)
+
+    #All attributes
+    if (is.null(attributes)) {attributes <- z11::z11_list_100m_attributes()}
+
+    for (i in attributes) {
+
+      message(sprintf("Joining variable %s...", i))
+
       #Get attribute data
-      attribute <- z11::z11_get_100m_attribute(attributes, data_source, geometry = FALSE, as_raster = FALSE)
+      attribute <- z11::z11_get_100m_attribute(i, data_source, geometry = FALSE, as_raster = FALSE)
       data.table::setDT(attribute)
-      data.table::setnames(attribute, old = "Gitter_ID_100m", inspire_column)
+      data.table::setnames(attribute, old = "Gitter_ID_100m", new = inspire_column)
 
       #Merge
-      linked_data <- data.table::data.table(df) %>%
-        merge(attribute, on = inspire_column, all.x = TRUE, sort = FALSE)
-    } else {
-      #Several attributes or all attributes
-      linked_data <- data.table(df)
-
-      #All attributes
-      if (is.null(attributes)) {attributes <- z11::z11_list_100m_attributes()}
-
-      for (i in attributes) {
-
-        message(i)
-
-        #Get attribute data
-        attribute <- z11::z11_get_100m_attribute(i, data_source, geometry = FALSE, as_raster = FALSE)
-        data.table::setDT(attribute)
-        data.table::setnames(attribute, old = "Gitter_ID_100m", new = inspire_column)
-
-        #Merge
-        linked_data <- merge(linked_data, attribute, on = inspire_column, all.x = TRUE, sort = FALSE)
-      }
+      linked_data <- merge(linked_data, attribute, on = inspire_column, all.x = TRUE, sort = FALSE)
     }
 
     return(linked_data)

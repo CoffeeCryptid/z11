@@ -71,32 +71,20 @@ setMethod("z11_simple_join_1km_attribute",
 setMethod("z11_simple_join_1km_attribute",
   signature(data_source = "ANY"),
   function(df, inspire_column, data_source, attributes) {
-    # Only one atttribute
-    if (length(attributes) == 1) {
-      #Get attribute data
-      attribute <- z11::z11_get_1km_attribute(attributes, data_source, geometry = FALSE, as_raster = FALSE)
+
+    linked_data <- df
+
+    #All attributes
+    if (is.null(attributes)) {attributes <- z11::z11_list_1km_attributes()}
+
+    for (i in attributes) {
+      message(sprintf("Joining variable %s...", i))
+
+      attribute <- z11::z11_get_1km_attribute(i, data_source, geometry = FALSE, as_raster = FALSE)
       data.table::setDT(attribute)
-      data.table::setnames(attribute, old = "Gitter_ID_1km", inspire_column)
+      data.table::setnames(attribute, old = "Gitter_ID_1km", new = inspire_column)
 
-      linked_data <- data.table::data.table(df) %>%
-        merge(attribute, on = inspire_column, all.x = TRUE, sort = FALSE)
-
-    } else if (length(attributes) != 1) {
-      # Several attributes or all attributes
-      linked_data <- df
-
-      #All attributes
-      if (is.null(attributes)) {attributes <- z11::z11_list_1km_attributes()}
-
-      for (i in attributes) {
-        message(i)
-
-        attribute <- z11::z11_get_1km_attribute(i, data_source, geometry = FALSE, as_raster = FALSE)
-        data.table::setDT(attribute)
-        data.table::setnames(attribute, old = "Gitter_ID_1km", new = inspire_column)
-
-        linked_data <- merge(linked_data, attribute, on = inspire_column, all.x = TRUE, sort = FALSE)
-      }
+      linked_data <- merge(linked_data, attribute, on = inspire_column, all.x = TRUE, sort = FALSE)
     }
 
     return(linked_data)
