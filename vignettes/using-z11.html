@@ -573,7 +573,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </ul></li>
 <li><a href="#working-with-1-km²-german-census-2011-data">Working with 1 km² German Census 2011 Data</a></li>
 <li><a href="#working-with-1-hectare-german-census-2011-data">Working with 1 hectare German Census 2011 Data</a></li>
-<li><a href="#joining-census-data-to-another-dataset">Joining Census data to another dataset</a><ul>
+<li><a href="#joining-german-census-2011-data-to-another-dataset">Joining German Census 2011 data to another dataset</a><ul>
 <li><a href="#joining-1km-attributes">Joining 1km attributes</a></li>
 <li><a href="#joining-100m-attributes">Joining 100m attributes</a></li>
 </ul></li>
@@ -600,10 +600,10 @@ table {
 <div id="downloading-the-census-data" class="section level1">
 <h1>Downloading the Census data</h1>
 <!-- The functions in the package rely on data prepared in [another repository](https://github.com/StefanJuenger/z11data). If you want to work locally, please download them first and follow the instructions of the manual. -->
-<p>Since the Census data is only available in very large .csv files that are difficult to handle, this package relies on pre-prepared data. Here, you have two options: either you save the Census data in .rds format, or store it in a SQL database. When joining a large number of Census variables to your data, using a SQL database can be faster, and less computationally expensive. Though for the most part, using the .rds data might be more convenient.</p>
+<p>Since the Census data is only available in very large .csv files that are difficult to handle, the functions in this package rely on prepared data. Here, you have two options: either you save the Census data in .rds format, or store it in a SQL database. When joining a large number of Census variables to your data, using a database can be faster, and less computationally expensive. Although in most cases, using the .rds data might be more convenient.</p>
 <div id="rds-data" class="section level2">
 <h2>.rds data</h2>
-<p>You can directly download the pre-prepared data from <a href="https://github.com/StefanJuenger/z11data">this github repository</a>. This data was downloaded from the Census website, unzipped and pre-prepared using the z11_prepare_data() function, although <strong>there is no need to do this yourself</strong>.</p>
+<p>You can directly download the data from <a href="https://github.com/StefanJuenger/z11data">this github repository</a>. This data was downloaded from the Census website, unzipped and transformed using the z11_prepare_data() function, although <strong>there is no need to do this yourself</strong>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">z11_prepare_data</span>(<span class="st">&quot;/home/yourname/census_csv&quot;</span>, <span class="st">&quot;/home/yourname/z11data&quot;</span>)</span></code></pre></div>
 </div>
 <div id="sql-database" class="section level2">
@@ -627,7 +627,7 @@ table {
 <span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; [13] &quot;Leerstandsquote_cat&quot; &quot;Leerstandsquote&quot;     &quot;unter18_A_cat&quot;      </span></span>
 <span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; [16] &quot;unter18_A&quot;           &quot;Wohnfl_Bew_D_cat&quot;    &quot;Wohnfl_Bew_D&quot;       </span></span>
 <span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt; [19] &quot;Wohnfl_Whg_D_cat&quot;    &quot;Wohnfl_Whg_D&quot;</span></span></code></pre></div>
-<p>Thus, in sum we can use 20 different census attributes of the size of 1 km². A full list of the variables can also be found in the <a href="z11-variables.html">z11 variables vignette</a>. Please note that some of the attributes are also duplicated, denoted by the <code>_cat</code>-suffix in the attribute name. These attributes may be less precise, but they comprise fewer missing values than the continuous attributes. In any case, for more details about the actual attributes, refer to the official documentation of the German Census 2011 at <a href="https://www.zensus2011.de" class="uri">https://www.zensus2011.de</a>.</p>
+<p>Thus, in sum we can use 20 different census attributes of the size of 1 km². A full list of the attributes can also be found in the <a href="z11-variables.html">z11 variables vignette</a>. Please note that some of the attributes are also duplicated, denoted by the <code>_cat</code>-suffix in the attribute name. These attributes may be less precise, but they comprise fewer missing values than the continuous attributes. In any case, for more details about the actual attributes, refer to the official documentation of the German Census 2011 at <a href="https://www.zensus2011.de" class="uri">https://www.zensus2011.de</a>.</p>
 <p>Now, if we want to load one of the attributes as a raster layer, we can use the <code>z11::z11_get_1km_attribute()</code> function. For example, for importing information on immigrant rates on a 1 km² grid level, we could use the following command:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>immigrants_1km &lt;-<span class="st"> </span><span class="kw">z11_get_1km_attribute</span>(<span class="st">&quot;Auslaender_A&quot;</span>, <span class="dt">data_source =</span> <span class="st">&quot;/home/yourname/z11data&quot;</span>)</span></code></pre></div>
 <p>If you’re working with a SQL database, pass your DBI Connection to the data_source argument:</p>
@@ -712,10 +712,11 @@ table {
 <span id="cb16-17"><a href="#cb16-17"></a><span class="co">#&gt; 9  1kmN2685E4336           -1 POINT (4336500 2685500)</span></span>
 <span id="cb16-18"><a href="#cb16-18"></a><span class="co">#&gt; 10 1kmN2685E4337           -1 POINT (4337500 2685500)</span></span></code></pre></div>
 </div>
-<div id="joining-census-data-to-another-dataset" class="section level1">
-<h1>Joining Census data to another dataset</h1>
+<div id="joining-german-census-2011-data-to-another-dataset" class="section level1">
+<h1>Joining German Census 2011 data to another dataset</h1>
 <p>Suppose we have a data.frame with 2000 rows, X and Y coordinates and two other variables. We want to link information from the Census to this data.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">head</span>(df) <span class="op">%&gt;%</span><span class="st"> </span>knitr<span class="op">::</span><span class="kw">kable</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">library</span>(magrittr)</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="kw">head</span>(df) <span class="op">%&gt;%</span><span class="st"> </span>knitr<span class="op">::</span><span class="kw">kable</span>()</span></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -736,95 +737,95 @@ var2
 <tbody>
 <tr>
 <td style="text-align:right;">
-4170850
+4137550
 </td>
 <td style="text-align:right;">
-3106450
+3152850
 </td>
 <td style="text-align:right;">
-0.2472638
+-0.2244639
 </td>
 <td style="text-align:right;">
-77.70812
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-4202350
-</td>
-<td style="text-align:right;">
-2876050
-</td>
-<td style="text-align:right;">
-0.8535974
-</td>
-<td style="text-align:right;">
-116.40389
+126.88084
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-4255650
+4195550
 </td>
 <td style="text-align:right;">
-2912550
+3274750
 </td>
 <td style="text-align:right;">
--0.2360903
+-0.9229896
 </td>
 <td style="text-align:right;">
-106.30108
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-4142250
-</td>
-<td style="text-align:right;">
-3069250
-</td>
-<td style="text-align:right;">
--1.8101677
-</td>
-<td style="text-align:right;">
-105.08953
+91.82422
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-4089850
+4236150
 </td>
 <td style="text-align:right;">
-2900650
+2965950
 </td>
 <td style="text-align:right;">
--1.4217976
+1.9394303
 </td>
 <td style="text-align:right;">
-90.26228
+45.49282
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-4117850
+4245850
 </td>
 <td style="text-align:right;">
-3068650
+2999250
 </td>
 <td style="text-align:right;">
-0.1147819
+1.2884648
 </td>
 <td style="text-align:right;">
-103.36337
+64.53935
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4551950
+</td>
+<td style="text-align:right;">
+3450750
+</td>
+<td style="text-align:right;">
+-1.5489180
+</td>
+<td style="text-align:right;">
+82.19278
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4108150
+</td>
+<td style="text-align:right;">
+2993150
+</td>
+<td style="text-align:right;">
+2.1210585
+</td>
+<td style="text-align:right;">
+120.38008
 </td>
 </tr>
 </tbody>
 </table>
-<p>To get the 100m and 1km INSPIRE IDs from the X and Y coordinates, we can transform the data.frame to an sf object and then use the z11_create_inspire_ids() function:</p>
+<p>To join census data to this dataset, we need the INSPIRE IDs of all coordinates in the data. We can obtain the INSPIRE IDs by transforming the data to an sf object and then using the z11_create_inspire_ids() function:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">library</span>(sf)</span>
 <span id="cb18-2"><a href="#cb18-2"></a><span class="co">#&gt; Linking to GEOS 3.6.2, GDAL 2.2.3, PROJ 4.9.3</span></span>
-<span id="cb18-3"><a href="#cb18-3"></a>df &lt;-<span class="st"> </span><span class="kw">st_as_sf</span>(df, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;Y&quot;</span>), <span class="dt">crs =</span> <span class="dv">3035</span>)</span>
-<span id="cb18-4"><a href="#cb18-4"></a>df &lt;-<span class="st"> </span><span class="kw">z11_create_inspire_ids</span>(df, <span class="dt">column_name =</span> <span class="st">&quot;inspire&quot;</span>, <span class="dt">combine =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb18-3"><a href="#cb18-3"></a>df &lt;-<span class="st"> </span><span class="kw">st_as_sf</span>(df, <span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;Y&quot;</span>), <span class="dt">crs =</span> <span class="dv">3035</span>) <span class="op">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="st">  </span><span class="kw">z11_create_inspire_ids</span>(<span class="dt">column_name =</span> <span class="st">&quot;inspire&quot;</span>, <span class="dt">combine =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb18-5"><a href="#cb18-5"></a><span class="kw">head</span>(df) <span class="op">%&gt;%</span><span class="st"> </span>knitr<span class="op">::</span><span class="kw">kable</span>()</span></code></pre></div>
 <table>
 <thead>
@@ -849,108 +850,109 @@ geometry
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.2472638
+-0.2244639
 </td>
 <td style="text-align:right;">
-77.70812
+126.88084
 </td>
 <td style="text-align:left;">
-1kmN3106E4170
+1kmN3152E4137
 </td>
 <td style="text-align:left;">
-100mN31064E41708
+100mN31528E41375
 </td>
 <td style="text-align:left;">
-POINT (4170850 3106450)
+POINT (4137550 3152850)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-0.8535974
+-0.9229896
 </td>
 <td style="text-align:right;">
-116.40389
+91.82422
 </td>
 <td style="text-align:left;">
-1kmN2876E4202
+1kmN3274E4195
 </td>
 <td style="text-align:left;">
-100mN28760E42023
+100mN32747E41955
 </td>
 <td style="text-align:left;">
-POINT (4202350 2876050)
+POINT (4195550 3274750)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--0.2360903
+1.9394303
 </td>
 <td style="text-align:right;">
-106.30108
+45.49282
 </td>
 <td style="text-align:left;">
-1kmN2912E4255
+1kmN2965E4236
 </td>
 <td style="text-align:left;">
-100mN29125E42556
+100mN29659E42361
 </td>
 <td style="text-align:left;">
-POINT (4255650 2912550)
+POINT (4236150 2965950)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--1.8101677
+1.2884648
 </td>
 <td style="text-align:right;">
-105.08953
+64.53935
 </td>
 <td style="text-align:left;">
-1kmN3069E4142
+1kmN2999E4245
 </td>
 <td style="text-align:left;">
-100mN30692E41422
+100mN29992E42458
 </td>
 <td style="text-align:left;">
-POINT (4142250 3069250)
+POINT (4245850 2999250)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--1.4217976
+-1.5489180
 </td>
 <td style="text-align:right;">
-90.26228
+82.19278
 </td>
 <td style="text-align:left;">
-1kmN2900E4089
+1kmN3450E4551
 </td>
 <td style="text-align:left;">
-100mN29006E40898
+100mN34507E45519
 </td>
 <td style="text-align:left;">
-POINT (4089850 2900650)
+POINT (4551950 3450750)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-0.1147819
+2.1210585
 </td>
 <td style="text-align:right;">
-103.36337
+120.38008
 </td>
 <td style="text-align:left;">
-1kmN3068E4117
+1kmN2993E4108
 </td>
 <td style="text-align:left;">
-100mN30686E41178
+100mN29931E41081
 </td>
 <td style="text-align:left;">
-POINT (4117850 3068650)
+POINT (4108150 2993150)
 </td>
 </tr>
 </tbody>
 </table>
+<p>Now that each observation has an INSPIRE ID, we can easily join census attributes to the data.</p>
 <div id="joining-1km-attributes" class="section level2">
 <h2>Joining 1km attributes</h2>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>df_joined &lt;-<span class="st"> </span><span class="kw">z11_simple_join_1km_attribute</span>(df, <span class="st">&quot;inspire1km&quot;</span>, <span class="dt">data_source =</span> con, </span>
@@ -984,70 +986,90 @@ geometry
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.2472638
+-0.2244639
 </td>
 <td style="text-align:right;">
-77.70812
+126.88084
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
-50.87
+50.00
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
 3
 </td>
 <td style="text-align:left;">
-POINT (4170850 3106450)
+POINT (4137550 3152850)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-0.8535974
+-0.9229896
 </td>
 <td style="text-align:right;">
-116.40389
+91.82422
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
-50.56
+48.07
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
 3
 </td>
 <td style="text-align:left;">
-POINT (4202350 2876050)
+POINT (4195550 3274750)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--0.2360903
+1.9394303
 </td>
 <td style="text-align:right;">
-106.30108
+45.49282
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
-48.60
+49.80
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
 3
 </td>
 <td style="text-align:left;">
-POINT (4255650 2912550)
+POINT (4236150 2965950)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--1.8101677
+1.2884648
 </td>
 <td style="text-align:right;">
-105.08953
+64.53935
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+51.50
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+3
+</td>
+<td style="text-align:left;">
+POINT (4245850 2999250)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-1.5489180
+</td>
+<td style="text-align:right;">
+82.19278
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
@@ -1059,47 +1081,27 @@ POINT (4255650 2912550)
 2
 </td>
 <td style="text-align:left;">
-POINT (4142250 3069250)
+POINT (4551950 3450750)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--1.4217976
+2.1210585
 </td>
 <td style="text-align:right;">
-90.26228
+120.38008
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
-53.00
+51.00
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
 3
 </td>
 <td style="text-align:left;">
-POINT (4089850 2900650)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.1147819
-</td>
-<td style="text-align:right;">
-103.36337
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-49.83
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-3
-</td>
-<td style="text-align:left;">
-POINT (4117850 3068650)
+POINT (4108150 2993150)
 </td>
 </tr>
 </tbody>
@@ -1138,10 +1140,70 @@ geometry
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.2472638
+-0.2244639
 </td>
 <td style="text-align:right;">
-77.70812
+126.88084
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+4
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+3
+</td>
+<td style="text-align:left;">
+POINT (4137550 3152850)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.9229896
+</td>
+<td style="text-align:right;">
+91.82422
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+3
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+NA
+</td>
+<td style="text-align:left;">
+POINT (4195550 3274750)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1.9394303
+</td>
+<td style="text-align:right;">
+45.49282
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+6
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+30
+</td>
+<td style="text-align:left;">
+POINT (4236150 2965950)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1.2884648
+</td>
+<td style="text-align:right;">
+64.53935
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
@@ -1150,98 +1212,18 @@ geometry
 22
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-3
+19
 </td>
 <td style="text-align:left;">
-POINT (4170850 3106450)
+POINT (4245850 2999250)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-0.8535974
+-1.5489180
 </td>
 <td style="text-align:right;">
-116.40389
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-44
-</td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-26
-</td>
-<td style="text-align:left;">
-POINT (4202350 2876050)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--0.2360903
-</td>
-<td style="text-align:right;">
-106.30108
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-10
-</td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-15
-</td>
-<td style="text-align:left;">
-POINT (4255650 2912550)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--1.8101677
-</td>
-<td style="text-align:right;">
-105.08953
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-3
-</td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-11
-</td>
-<td style="text-align:left;">
-POINT (4142250 3069250)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--1.4217976
-</td>
-<td style="text-align:right;">
-90.26228
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-10
-</td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-NA
-</td>
-<td style="text-align:left;">
-POINT (4089850 2900650)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.1147819
-</td>
-<td style="text-align:right;">
-103.36337
+82.19278
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
@@ -1250,10 +1232,30 @@ POINT (4089850 2900650)
 NA
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-3
+13
 </td>
 <td style="text-align:left;">
-POINT (4117850 3068650)
+POINT (4551950 3450750)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2.1210585
+</td>
+<td style="text-align:right;">
+120.38008
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+8
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+NA
+</td>
+<td style="text-align:left;">
+POINT (4108150 2993150)
 </td>
 </tr>
 </tbody>

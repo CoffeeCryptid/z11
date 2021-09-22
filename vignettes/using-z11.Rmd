@@ -41,7 +41,7 @@ After installing, the package can be loaded using `R`'s standard method:
 library(z11)
 ```
 
-```{r load-library-2, include=FALSE, message=FALSE}
+```{r load-library-2, echo=FALSE, message=FALSE}
 devtools::load_all(path = "/home/sarah/Daten/R/z11")
 library(kableExtra)
 library(magrittr)
@@ -51,11 +51,11 @@ library(magrittr)
 
 <!-- The functions in the package rely on data prepared in [another repository](https://github.com/StefanJuenger/z11data). If you want to work locally, please download them first and follow the instructions of the manual. -->
 
-Since the Census data is only available in very large .csv files that are difficult to handle, this package relies on pre-prepared data. Here, you have two options: either you save the Census data in .rds format, or store it in a SQL database. When joining a large number of Census variables to your data, using a SQL database can be faster, and less computationally expensive. Though for the most part, using the .rds data might be more convenient.
+Since the Census data is only available in very large .csv files that are difficult to handle, the functions in this package rely on prepared data. Here, you have two options: either you save the Census data in .rds format, or store it in a SQL database. When joining a large number of Census variables to your data, using a database can be faster, and less computationally expensive. Although in most cases, using the .rds data might be more convenient.
 
 ## .rds data
 
-You can directly download the pre-prepared data from [this github repository](https://github.com/StefanJuenger/z11data). This data was downloaded from the Census website, unzipped and pre-prepared using the z11_prepare_data() function, although **there is no need to do this yourself**.
+You can directly download the data from [this github repository](https://github.com/StefanJuenger/z11data). This data was downloaded from the Census website, unzipped and transformed using the z11_prepare_data() function, although **there is no need to do this yourself**.
 
 ```{r prepare-rds, eval = FALSE}
 z11_prepare_data("/home/yourname/census_csv", "/home/yourname/z11data")
@@ -85,7 +85,7 @@ con <- dbConnect(RSQLite::SQLite(), "/home/sarah/Daten/R/z11data/z11data.sqlite3
 z11::z11_list_1km_attributes()
 ```
 
-Thus, in sum we can use `r length(z11::z11_list_1km_attributes())` different census attributes of the size of 1 km². A full list of the variables can also be found in the [z11 variables vignette](z11-variables.html). Please note that some of the attributes are also duplicated, denoted by the `_cat`-suffix in the attribute name. These attributes may be less precise, but they comprise fewer missing values than the continuous attributes. In any case, for more details about the actual attributes, refer to the official documentation of the German Census 2011 at https://www.zensus2011.de.
+Thus, in sum we can use `r length(z11::z11_list_1km_attributes())` different census attributes of the size of 1 km². A full list of the attributes can also be found in the [z11 variables vignette](z11-variables.html). Please note that some of the attributes are also duplicated, denoted by the `_cat`-suffix in the attribute name. These attributes may be less precise, but they comprise fewer missing values than the continuous attributes. In any case, for more details about the actual attributes, refer to the official documentation of the German Census 2011 at https://www.zensus2011.de.
 
 Now, if we want to load one of the attributes as a raster layer, we can use the `z11::z11_get_1km_attribute()` function. For example, for importing information on immigrant rates on a 1 km² grid level, we could use the following command:
 
@@ -158,7 +158,7 @@ See:
 immigrants_1km_sf
 ```
 
-# Joining Census data to another dataset
+# Joining German Census 2011 data to another dataset
 
 ```{r, echo = FALSE}
 library(data.table)
@@ -175,17 +175,20 @@ df = df[, .(X, Y, var1, var2)]
 Suppose we have a data.frame with 2000 rows, X and Y coordinates and two other variables. We want to link information from the Census to this data.
 
 ```{r}
+library(magrittr)
 head(df) %>% knitr::kable()
 ```
 
-To get the 100m and 1km INSPIRE IDs from the X and Y coordinates, we can transform the data.frame to an sf object and then use the z11_create_inspire_ids() function:
+To join census data to this dataset, we need the INSPIRE IDs of all coordinates in the data. We can obtain the INSPIRE IDs by transforming the data to an sf object and then using the z11_create_inspire_ids() function:
 
 ```{r}
 library(sf)
-df <- st_as_sf(df, coords = c("X", "Y"), crs = 3035)
-df <- z11_create_inspire_ids(df, column_name = "inspire", combine = TRUE)
+df <- st_as_sf(df, coords = c("X", "Y"), crs = 3035) %>%
+  z11_create_inspire_ids(column_name = "inspire", combine = TRUE)
 head(df) %>% knitr::kable()
 ```
+
+Now that each observation has an INSPIRE ID, we can easily join census attributes to the data.
 
 ## Joining 1km attributes
 
