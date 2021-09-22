@@ -29,7 +29,7 @@ z11_create_inspire_ids <- function(
   id_name <- glue::glue("{column_name}{type}")
   names(type) <- id_name
 
-  inspire <- purrr::map_dfc(type, get_inspire_id, coordinate_pairs = coordinate_pairs)
+  inspire <- purrr::map_dfc(type, z11::get_inspire_id, coordinate_pairs = coordinate_pairs)
 
   if (isTRUE(combine)) {
     return(

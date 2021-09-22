@@ -15,7 +15,7 @@
 #' @examples
 #' z11_prepare_data("/home/yourname/Haushalte100m.csv", "/home/yourname/z11data")
 #'
-#' con <- DBI::dbConnect(RSQLite::SQLite, "/home/yourname/z11data.sqlite3")
+#' con <- DBI::dbConnect(RSQLite::SQLite(), "/home/yourname/z11data.sqlite3")
 #' z11_prepare_data("/home/yourname/census_data", con)
 #' DBI::dbDisconnect(con)
 #'
@@ -53,7 +53,7 @@ setMethod("z11_prepare_file",
   function(file, data_location) {
     #Read data
     message("Reading file...")
-    df <- data.table::fread(file, encoding = "Latin-1")
+    df <- data.table::fread(file, encoding = "Latin-1", dec = ",")
 
     #100m grid data
     if (ncol(df) == 7) {
@@ -131,7 +131,7 @@ setMethod("z11_prepare_file",
   function(file, data_location) {
     #Read data
     message("Reading file...")
-    df <- data.table::fread(file, encoding = "Latin-1")
+    df <- data.table::fread(file, encoding = "Latin-1", dec = ",")
 
     #Prepare data
     message("Transforming data...")
@@ -139,8 +139,6 @@ setMethod("z11_prepare_file",
       identifier <- df$Merkmal[3]
       name <- switch(identifier, ALTER_KURZ = "demographie100m", FAMGROESS_KLASS = "familien100m",
                      ZAHLWOHNGN_HHG = "gebaeude100m", WOHNEIGENTUM = "wohnungen100m", HHTYP_LEB = "haushalte100m")
-      #message("    Transform INSPIRE ID to numeric")
-      #df[, Gitter_ID_100m := as.numeric(gsub("^100m|[^0-9]", "", Gitter_ID_100m))]
 
       message("    Transform to wide format")
       df <- data.table::dcast(df, Gitter_ID_100m ~ Merkmal + Auspraegung_Code, value.var = "Anzahl")
