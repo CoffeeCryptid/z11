@@ -26,29 +26,32 @@ z11_create_inspire_ids <- function(
     sf::st_coordinates() %>%
     tibble::as_tibble()
 
-  id_name <-
-    glue::glue("{column_name}{type}")
+  id_name <- glue::glue("{column_name}{type}")
+  names(type) <- id_name
 
+  inspire <- purrr::map_dfc(type, get_inspire_id, coordinate_pairs = coordinate_pairs)
+
+  if (isTRUE(combine)) {
+    return(
+      dplyr::bind_cols(data, inspire)
+    )
+  } else {
+    return(inspire)
+  }
+}
+
+get_inspire_id <- function(type, coordinate_pairs) {
   if (type == "1km") {
-    inspire <- glue::glue(
+    glue::glue(
       "1kmN{substr(coordinate_pairs$Y %>% as.character(), 1, 4)}",
       "E{substr(coordinate_pairs$X %>% as.character(), 1, 4)}"
     ) %>% as.character()
   } else if (type == "100m") {
-    inspire <- glue::glue(
+    glue::glue(
       "100mN{substr(coordinate_pairs$Y %>% as.character(), 1, 5)}",
       "E{substr(coordinate_pairs$X %>% as.character(), 1, 5)}"
     ) %>% as.character()
   } else {
     stop("Not a valid type!")
   }
-  
-  if (isTRUE(combine)) {
-    return(
-      dplyr::bind_cols(data, !!id_name := inspire)
-    )
-  } else {
-    return(inspire)
-  }
-
 }
