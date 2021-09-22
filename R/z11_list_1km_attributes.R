@@ -21,3 +21,10 @@ z11_list_1km_attributes <- function() {
   #   dplyr::select(-Gitter_ID_1km) %>%
   #   names()
 }
+
+#z11_list_1km_attributes_db <- function(con) {
+#  lapply(c("spitz1km", "klassiert1km"), 
+#         function(x) DBI::dbListFields(con, x)) %>% 
+#    unlist() %>%
+#    subset(., . != "Gitter_ID_1km")
+#}

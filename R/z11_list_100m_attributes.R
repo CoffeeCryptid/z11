@@ -22,3 +22,15 @@ z11_list_100m_attributes <- function() {
   #   sub(".rds", "", .) %>%
   #   setdiff(c("Gitter_ID_100m_x_y", "INSGESAMT_0"))
 }
+
+#z11_list_100m_attributes_db <- function(con) {
+#  c("Population" = "bevoelkerung100m", 
+#    "Demography" = "demographie100m", 
+#    "Households" = "haushalte100m",
+#    "Families" = "familien100m", 
+#    "Buildings" = "gebaeude100m", 
+#    "Flats" = "wohnungen100m") %>%
+#    lapply(function(x) DBI::dbListFields(con, x) %>% 
+#             base::subset(., . != "Gitter_ID_100m")
+#           )
+#}
