@@ -1,6 +1,6 @@
 ---
 title: "Quick Start in Using the z11 package"
-author: "Stefan Jünger"
+author: "Stefan Jünger, Sarah Thiesen"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
@@ -10,6 +10,12 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{css, echo=FALSE}
+table {
+  width:100%;
+}
+```
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -29,28 +35,68 @@ Generally, the German Census 2011 data are available under a [Data licence Germa
 remotes::install_github("StefanJuenger/z11")
 ```
 
-The functions in the package rely on data prepared in [another repository](https://github.com/StefanJuenger/z11data). If you want to work locally, please download them first and follow the instructions of the manual.
-
 After installing, the package can be loaded using `R`'s standard method:
 
-```{r load-library}
+```{r load-library, eval = FALSE}
 library(z11)
 ```
 
+```{r load-library-2, include=FALSE, message=FALSE}
+devtools::load_all(path = "/home/sarah/Daten/R/z11")
+library(kableExtra)
+library(magrittr)
+```
+
+# Downloading the Census data
+
+<!-- The functions in the package rely on data prepared in [another repository](https://github.com/StefanJuenger/z11data). If you want to work locally, please download them first and follow the instructions of the manual. -->
+
+Since the Census data is only available in very large .csv files that are difficult to handle, this package relies on pre-prepared data. Here, you have two options: either you save the Census data in .rds format, or store it in a SQL database. When joining a large number of Census variables to your data, using a SQL database can be faster, and less computationally expensive. Though for the most part, using the .rds data might be more convenient.
+
+## .rds data
+
+You can directly download the pre-prepared data from [this github repository](https://github.com/StefanJuenger/z11data). This data was downloaded from the Census website, unzipped and pre-prepared using the z11_prepare_data() function, although **there is no need to do this yourself**.
+
+```{r prepare-rds, eval = FALSE}
+z11_prepare_data("/home/yourname/census_csv", "/home/yourname/z11data")
+```
+
+## SQL database
+
+If you wish to store the Census data in a SQL database, you first have to download and unzip the data. If you're using Linux, you can use the z11_download_data() function for this, otherwise download the .csv data from the [Census website](https://www.zensus2011.de/DE/Home/Aktuelles/DemografischeGrunddaten.html) and unzip it manually. Next, use the z11_prepare_data() function to read in the .csv data, transform it, and store it in your database.
+
+```{r prepare-sql, eval = FALSE}
+z11_download_data("/home/yourname/census_csv")
+
+library(DBI)
+con <- dbConnect(RSQLite::SQLite(), "/home/yourname/z11data.sqlite3")
+z11_prepare_data("/home/yourname/census_csv", con)
+```
+
+```{r, echo=FALSE}
+library(DBI)
+con <- dbConnect(RSQLite::SQLite(), "/home/sarah/Daten/R/z11data/z11data.sqlite3")
+```
+
 # Working with 1 km² German Census 2011 Data
-1 km² data were the first data published in 2015. While they comprise fewer attributes than the 1 hectare ones (see below), the data are in a way more easy to use format (see also the z11 package's vignette about the initial data preparation [still in the works]). You can browse all available attributes by using the following function.
+1 km² data were the first data published in 2015. While they comprise fewer attributes than the 1 hectare ones (see below), the data are in a way more easy to use format (see also the z11 package's vignette about the initial data preparation [still in the works]). You can browse all available attributes by using the following function:
 
 ```{r list-1km-attributes}
 z11::z11_list_1km_attributes()
 ```
 
-Thus, in sum we can use `r length(z11::z11_list_1km_attributes())` different census attributes of the size of 1 km². Please note that some of the attributes are also duplicated, denoted by the `_cat`-suffix in the attribute name. These attributes may be less precise, but they comprise fewer missing values than the continuous attributes. In any case, for more details about the actual attributes, refer to the official documentation of the German Census 2011 at https://www.zensus2011.de.
+Thus, in sum we can use `r length(z11::z11_list_1km_attributes())` different census attributes of the size of 1 km². A full list of the variables can also be found in the [z11 variables vignette](z11-variables.html). Please note that some of the attributes are also duplicated, denoted by the `_cat`-suffix in the attribute name. These attributes may be less precise, but they comprise fewer missing values than the continuous attributes. In any case, for more details about the actual attributes, refer to the official documentation of the German Census 2011 at https://www.zensus2011.de.
 
 Now, if we want to load one of the attributes as a raster layer, we can use the `z11::z11_get_1km_attribute()` function. For example, for importing information on immigrant rates on a 1 km² grid level, we could use the following command:
 
-```{r get-1km-immigrants-raster}
-immigrants_1km <-
-  z11::z11_get_1km_attribute(Auslaender_A)
+```{r get-1km-immigrants-raster, eval=FALSE}
+immigrants_1km <- z11_get_1km_attribute("Auslaender_A", data_source = "/home/yourname/z11data")
+```
+
+If you're working with a SQL database, pass your DBI Connection to the data_source argument:
+
+```{r get-1km-immigrants-raster-sql}
+immigrants_1km <- z11_get_1km_attribute("Auslaender_A", data_source = con)
 ```
 
 Voilà, we got this information as a standard raster layer (`class("Raster")`) as specified in the `raster` package:
@@ -61,15 +107,14 @@ immigrants_1km
 
 Therefore, we can also use the `raster` package's standard plotting procedures:
 
-```{r plot-1km-immigrants-raster}
+```{r plot-1km-immigrants-raster, fig.width=7, fig.height=5}
 raster::plot(immigrants_1km)
 ```
 
 Suppose we do not want to work with raster data. Instead, we aim to use the raster grid cell's centroid coordinates. In that case, we can also load the data as a simple features data frame with point geometries as specified in the `sf` package by simply using the option `as_raster`:
 
 ```{r get-1km-immigrants-sf}
-immigrants_1km_sf <-
-  z11::z11_get_1km_attribute(Auslaender_A, as_raster = FALSE)
+immigrants_1km_sf <- z11_get_1km_attribute("Auslaender_A", data_source = con, as_raster = FALSE)
 ```
 
 Here we go:
@@ -82,29 +127,29 @@ immigrants_1km_sf
 In 2018, destatis also published Census data on a 1-hectare grid level. This 100m $\times$ 100m data provides a more fine-grained level of information for Germany's population. Moreover, the data comprise way more attributes than the 1 km² one, including details on buildings and even heater types. Again, we can list all available attributes using a specialized function:
 
 ```{r list-100m-attributes}
-z11::z11_list_100m_attributes()
+head(z11_list_100m_attributes())
 ```
 
-As we can see, the number of attributes is quite high, in sum `r length(z11::z11_list_100m_attributes())`. The naming convention is different as the names depict a concatenated string between each attribute name and its category. In contrast to the 1 km² data, the attribute values are the number of persons within each 1-hectare grid cell sharing the attribute's characteristic. Again, please refer to the official German Census 2011 documentation since it details how to handle the data and interpret its values. The data here are just vanilla Census data. However, they were converted from a long data format to a wide one for rasterizing.
+The number of attributes is quite high, in sum `r length(z11::z11_list_100m_attributes())`. The naming convention is different as the names depict a concatenated string between a three character prefix representing the source .csv dataset, each attribute name and its category. A full list of the available attributes with short descriptions can be found in the [z11 variables vignette](z11-variables.html).
+
+In contrast to the 1 km² data, the attribute values are the number of persons within each 1-hectare grid cell sharing the attribute's characteristic. Again, please refer to the official German Census 2011 documentation since it details how to handle the data and interpret its values. The data here are just vanilla Census data. However, they were converted from a long data format to a wide one for rasterizing.
 
 Speaking of rasterizing: the 1-hectare data can again be imported by using a specialized function. For example, to import the number of immigrants attribute, we can use this command:
 
 ```{r get-100m-immigrants-raster}
-immigrants_100m <-
-  z11::z11_get_100m_attribute(STAATSANGE_KURZ_2)
+immigrants_100m <- z11_get_100m_attribute("DEM_STAATSANGE_KURZ_2", data_source = con)
 ```
 
 The operation may take a bit longer, as the 1-hectare data are bigger and therefore computationally also a bit more expensive. Fortunately, through their flat data structure, raster data files are usually a bit more comfortable to process. Plotting 1-hectare data is, therefore, also straightforward:
 
-```{r plot-100m-immigrants-raster}
+```{r plot-100m-immigrants-raster, fig.width=7, fig.height=5}
 raster::plot(immigrants_100m)
 ```
 
 If you wish to work with the data in a vector format, you can also use the `as_raster` option in the `z11::z11_get_100m_attribute()` function:
 
 ```{r get-100m-immigrants-sf}
-immigrants_100m_sf <-
-  z11::z11_get_100m_attribute(STAATSANGE_KURZ_2, as_raster = FALSE)
+immigrants_100m_sf <- z11_get_100m_attribute("DEM_STAATSANGE_KURZ_2", con, as_raster = FALSE)
 ```
 
 See:
@@ -113,17 +158,70 @@ See:
 immigrants_1km_sf
 ```
 
-That's it. There's not yet much more to tell at the moment.
+# Joining Census data to another dataset
 
-# Future
-The package itself should not provide many more functionalities, rather than listing and importing the German Census 2011 data. However, few things are still a bit rough around the edges and hopefully should be improved in the future:
+```{r, echo = FALSE}
+library(data.table)
+df <- fread("/home/sarah/Daten/work/geo/csv_zensus/Familie100m.csv", select = "Gitter_ID_100m", encoding = "Latin-1")[[1]]
 
-## Speed
-In some cases (especially in the 1-hectare data), the functions of the package could be a bit quicker in computing. I did my best to reduce the input data amount, but a simple database format would still have some benefits.
+n = 2000
+df <- sample(df, n)
+df <- data.frame(inspire = df, var1 = rnorm(n), var2 = rnorm(n, mean = 100, sd = 30))
+setDT(df)
+df[, c("X", "Y") := as.list(z11_extract_inspire_coordinates(inspire))]
+df = df[, .(X, Y, var1, var2)]
+```
 
-## Metadata
-What is missing in the package is the documentation of the census. It would indeed be nice to have a more comprehensive overview of all attributes and their descriptions. Also, the variable names are sometimes not helpful. At the moment, I am still undecided if I really want the change the latter since they resemble the names from the original input data. The goal of the package is not necessarily data harmonization of the German Census 2011.
+Suppose we have a data.frame with 2000 rows, X and Y coordinates and two other variables. We want to link information from the Census to this data.
 
+```{r}
+head(df) %>% knitr::kable()
+```
+
+To get the 100m and 1km INSPIRE IDs from the X and Y coordinates, we can transform the data.frame to an sf object and then use the z11_create_inspire_ids() function:
+
+```{r}
+library(sf)
+df <- st_as_sf(df, coords = c("X", "Y"), crs = 3035)
+df <- z11_create_inspire_ids(df, column_name = "inspire", combine = TRUE)
+head(df) %>% knitr::kable()
+```
+
+## Joining 1km attributes
+
+```{r}
+df_joined <- z11_simple_join_1km_attribute(df, "inspire1km", data_source = con, 
+  attributes = c("Frauen_A", "Frauen_A_cat"))
+```
+
+```{r, echo=FALSE}
+head(df_joined) %>% 
+  dplyr::mutate(dots = "...") %>%
+  dplyr::select(var1, var2, dots, Frauen_A, Frauen_A_cat, geometry) %>%
+  kbl(col.names = c("var1", "var2", "...", "Frauen_A", "Frauen_A_cat", "geometry")) %>%
+  kable_styling(full_width = TRUE) %>%
+  column_spec(3, extra_css = "padding-right: 0.7em; padding-left: 0.7em;") %>%
+  column_spec(4, background = "#FDFD97") %>%
+  column_spec(5, background = "#FDFD97")
+```
+
+## Joining 100m attributes
+
+```{r}
+df_joined <- z11_simple_join_100m_attribute(df, "inspire100m", data_source = con, 
+  attributes = c("DEM_RELIGION_KURZ_1", "DEM_RELIGION_KURZ_2"))
+```
+
+```{r, echo = FALSE}
+head(df_joined) %>% 
+  dplyr::mutate(dots = "...") %>%
+  dplyr::select(var1, var2, dots, DEM_RELIGION_KURZ_1, DEM_RELIGION_KURZ_2, geometry) %>%
+  kbl(format = "html", col.names = c("var1", "var2", "...", "DEM_RELIGION _KURZ_1", "DEM_RELIGION _KURZ_2", "geometry")) %>% 
+  kable_styling() %>%
+  column_spec(3, extra_css = "padding-right: 0.7em; padding-left: 0.7em;") %>%
+  column_spec(4, width = "4em", background = "#FDFD97") %>%
+  column_spec(5, width = "4em", background = "#FDFD97")
+```
 
 # Sources
 
