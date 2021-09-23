@@ -127,7 +127,7 @@ immigrants_1km_sf
 In 2018, destatis also published Census data on a 1-hectare grid level. This 100m $\times$ 100m data provides a more fine-grained level of information for Germany's population. Moreover, the data comprise way more attributes than the 1 km² one, including details on buildings and even heater types. Again, we can list all available attributes using a specialized function:
 
 ```{r list-100m-attributes}
-head(z11_list_100m_attributes())
+head(z11_list_100m_attributes(), 12)
 ```
 
 The number of attributes is quite high, in sum `r length(z11::z11_list_100m_attributes())`. The naming convention is different as the names depict a concatenated string between a three character prefix representing the source .csv dataset, each attribute name and its category. A full list of the available attributes with short descriptions can be found in the [z11 variables vignette](z11-variables.html).
@@ -193,7 +193,7 @@ Now that each observation has an INSPIRE ID, we can easily join census attribute
 ## Joining 1km attributes
 
 ```{r}
-df_joined <- z11_simple_join_1km_attribute(df, "inspire1km", data_source = con, 
+df_joined <- z11_simple_join_1km_attribute(df, inspire1km, data_source = con, 
   attributes = c("Frauen_A", "Frauen_A_cat"))
 ```
 
@@ -211,7 +211,7 @@ head(df_joined) %>%
 ## Joining 100m attributes
 
 ```{r}
-df_joined <- z11_simple_join_100m_attribute(df, "inspire100m", data_source = con, 
+df_joined <- z11_simple_join_100m_attribute(df, inspire100m, data_source = con, 
   attributes = c("DEM_RELIGION_KURZ_1", "DEM_RELIGION_KURZ_2"))
 ```
 

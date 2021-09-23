@@ -12,7 +12,7 @@
 
 <meta name="author" content="Stefan Jünger, Sarah Thiesen" />
 
-<meta name="date" content="2021-09-22" />
+<meta name="date" content="2021-09-23" />
 
 <title>Quick Start in Using the z11 package</title>
 
@@ -560,7 +560,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Quick Start in Using the z11 package</h1>
 <h4 class="author">Stefan Jünger, Sarah Thiesen</h4>
-<h4 class="date">2021-09-22</h4>
+<h4 class="date">2021-09-23</h4>
 
 
 <div id="TOC">
@@ -675,9 +675,10 @@ table {
 <div id="working-with-1-hectare-german-census-2011-data" class="section level1">
 <h1>Working with 1 hectare German Census 2011 Data</h1>
 <p>In 2018, destatis also published Census data on a 1-hectare grid level. This 100m <span class="math inline">\(\times\)</span> 100m data provides a more fine-grained level of information for Germany’s population. Moreover, the data comprise way more attributes than the 1 km² one, including details on buildings and even heater types. Again, we can list all available attributes using a specialized function:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">head</span>(<span class="kw">z11_list_100m_attributes</span>())</span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="co">#&gt; [1] &quot;DEM_ALTER_10JG_1&quot; &quot;DEM_ALTER_10JG_2&quot; &quot;DEM_ALTER_10JG_3&quot; &quot;DEM_ALTER_10JG_4&quot;</span></span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="co">#&gt; [5] &quot;DEM_ALTER_10JG_5&quot; &quot;DEM_ALTER_10JG_6&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">head</span>(<span class="kw">z11_list_100m_attributes</span>(), <span class="dv">12</span>)</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="co">#&gt;  [1] &quot;DEM_ALTER_10JG_1&quot; &quot;DEM_ALTER_10JG_2&quot; &quot;DEM_ALTER_10JG_3&quot; &quot;DEM_ALTER_10JG_4&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="co">#&gt;  [5] &quot;DEM_ALTER_10JG_5&quot; &quot;DEM_ALTER_10JG_6&quot; &quot;DEM_ALTER_10JG_7&quot; &quot;DEM_ALTER_10JG_8&quot;</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="co">#&gt;  [9] &quot;DEM_ALTER_10JG_9&quot; &quot;DEM_ALTER_KURZ_1&quot; &quot;DEM_ALTER_KURZ_2&quot; &quot;DEM_ALTER_KURZ_3&quot;</span></span></code></pre></div>
 <p>The number of attributes is quite high, in sum 229. The naming convention is different as the names depict a concatenated string between a three character prefix representing the source .csv dataset, each attribute name and its category. A full list of the available attributes with short descriptions can be found in the <a href="z11-variables.html">z11 variables vignette</a>.</p>
 <p>In contrast to the 1 km² data, the attribute values are the number of persons within each 1-hectare grid cell sharing the attribute’s characteristic. Again, please refer to the official German Census 2011 documentation since it details how to handle the data and interpret its values. The data here are just vanilla Census data. However, they were converted from a long data format to a wide one for rasterizing.</p>
 <p>Speaking of rasterizing: the 1-hectare data can again be imported by using a specialized function. For example, to import the number of immigrants attribute, we can use this command:</p>
@@ -737,86 +738,86 @@ var2
 <tbody>
 <tr>
 <td style="text-align:right;">
-4137550
+4053850
 </td>
 <td style="text-align:right;">
-3152850
+3117650
 </td>
 <td style="text-align:right;">
--0.2244639
+-0.4174479
 </td>
 <td style="text-align:right;">
-126.88084
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-4195550
-</td>
-<td style="text-align:right;">
-3274750
-</td>
-<td style="text-align:right;">
--0.9229896
-</td>
-<td style="text-align:right;">
-91.82422
+111.6800
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-4236150
+4079750
 </td>
 <td style="text-align:right;">
-2965950
+3102550
 </td>
 <td style="text-align:right;">
-1.9394303
+-0.4518388
 </td>
 <td style="text-align:right;">
-45.49282
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-4245850
-</td>
-<td style="text-align:right;">
-2999250
-</td>
-<td style="text-align:right;">
-1.2884648
-</td>
-<td style="text-align:right;">
-64.53935
+103.4315
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-4551950
+4142950
 </td>
 <td style="text-align:right;">
-3450750
+3321050
 </td>
 <td style="text-align:right;">
--1.5489180
+-0.5202282
 </td>
 <td style="text-align:right;">
-82.19278
+111.9699
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-4108150
+4132250
 </td>
 <td style="text-align:right;">
-2993150
+3220150
 </td>
 <td style="text-align:right;">
-2.1210585
+-0.3452813
 </td>
 <td style="text-align:right;">
-120.38008
+152.8478
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4523850
+</td>
+<td style="text-align:right;">
+3429450
+</td>
+<td style="text-align:right;">
+-0.2811538
+</td>
+<td style="text-align:right;">
+66.7799
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4317950
+</td>
+<td style="text-align:right;">
+2962750
+</td>
+<td style="text-align:right;">
+0.3868868
+</td>
+<td style="text-align:right;">
+118.8525
 </td>
 </tr>
 </tbody>
@@ -850,104 +851,104 @@ geometry
 <tbody>
 <tr>
 <td style="text-align:right;">
--0.2244639
+-0.4174479
 </td>
 <td style="text-align:right;">
-126.88084
+111.6800
 </td>
 <td style="text-align:left;">
-1kmN3152E4137
+1kmN3117E4053
 </td>
 <td style="text-align:left;">
-100mN31528E41375
+100mN31176E40538
 </td>
 <td style="text-align:left;">
-POINT (4137550 3152850)
+POINT (4053850 3117650)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--0.9229896
+-0.4518388
 </td>
 <td style="text-align:right;">
-91.82422
+103.4315
 </td>
 <td style="text-align:left;">
-1kmN3274E4195
+1kmN3102E4079
 </td>
 <td style="text-align:left;">
-100mN32747E41955
+100mN31025E40797
 </td>
 <td style="text-align:left;">
-POINT (4195550 3274750)
+POINT (4079750 3102550)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-1.9394303
+-0.5202282
 </td>
 <td style="text-align:right;">
-45.49282
+111.9699
 </td>
 <td style="text-align:left;">
-1kmN2965E4236
+1kmN3321E4142
 </td>
 <td style="text-align:left;">
-100mN29659E42361
+100mN33210E41429
 </td>
 <td style="text-align:left;">
-POINT (4236150 2965950)
+POINT (4142950 3321050)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-1.2884648
+-0.3452813
 </td>
 <td style="text-align:right;">
-64.53935
+152.8478
 </td>
 <td style="text-align:left;">
-1kmN2999E4245
+1kmN3220E4132
 </td>
 <td style="text-align:left;">
-100mN29992E42458
+100mN32201E41322
 </td>
 <td style="text-align:left;">
-POINT (4245850 2999250)
+POINT (4132250 3220150)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--1.5489180
+-0.2811538
 </td>
 <td style="text-align:right;">
-82.19278
+66.7799
 </td>
 <td style="text-align:left;">
-1kmN3450E4551
+1kmN3429E4523
 </td>
 <td style="text-align:left;">
-100mN34507E45519
+100mN34294E45238
 </td>
 <td style="text-align:left;">
-POINT (4551950 3450750)
+POINT (4523850 3429450)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-2.1210585
+0.3868868
 </td>
 <td style="text-align:right;">
-120.38008
+118.8525
 </td>
 <td style="text-align:left;">
-1kmN2993E4108
+1kmN2962E4317
 </td>
 <td style="text-align:left;">
-100mN29931E41081
+100mN29627E43179
 </td>
 <td style="text-align:left;">
-POINT (4108150 2993150)
+POINT (4317950 2962750)
 </td>
 </tr>
 </tbody>
@@ -955,7 +956,7 @@ POINT (4108150 2993150)
 <p>Now that each observation has an INSPIRE ID, we can easily join census attributes to the data.</p>
 <div id="joining-1km-attributes" class="section level2">
 <h2>Joining 1km attributes</h2>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>df_joined &lt;-<span class="st"> </span><span class="kw">z11_simple_join_1km_attribute</span>(df, <span class="st">&quot;inspire1km&quot;</span>, <span class="dt">data_source =</span> con, </span>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>df_joined &lt;-<span class="st"> </span><span class="kw">z11_simple_join_1km_attribute</span>(df, inspire1km, <span class="dt">data_source =</span> con, </span>
 <span id="cb19-2"><a href="#cb19-2"></a>  <span class="dt">attributes =</span> <span class="kw">c</span>(<span class="st">&quot;Frauen_A&quot;</span>, <span class="st">&quot;Frauen_A_cat&quot;</span>))</span>
 <span id="cb19-3"><a href="#cb19-3"></a><span class="co">#&gt; Prepare for joining...</span></span>
 <span id="cb19-4"><a href="#cb19-4"></a><span class="co">#&gt; Join data...</span></span>
@@ -986,10 +987,90 @@ geometry
 <tbody>
 <tr>
 <td style="text-align:right;">
--0.2244639
+-0.4174479
 </td>
 <td style="text-align:right;">
-126.88084
+111.6800
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+51.40
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+3
+</td>
+<td style="text-align:left;">
+POINT (4053850 3117650)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.4518388
+</td>
+<td style="text-align:right;">
+103.4315
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+51.81
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+3
+</td>
+<td style="text-align:left;">
+POINT (4079750 3102550)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.5202282
+</td>
+<td style="text-align:right;">
+111.9699
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+49.32
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+3
+</td>
+<td style="text-align:left;">
+POINT (4142950 3321050)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.3452813
+</td>
+<td style="text-align:right;">
+152.8478
+</td>
+<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
+…
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+51.46
+</td>
+<td style="text-align:right;background-color: #FDFD97 !important;">
+3
+</td>
+<td style="text-align:left;">
+POINT (4132250 3220150)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+-0.2811538
+</td>
+<td style="text-align:right;">
+66.7799
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
@@ -1001,107 +1082,27 @@ geometry
 3
 </td>
 <td style="text-align:left;">
-POINT (4137550 3152850)
+POINT (4523850 3429450)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--0.9229896
+0.3868868
 </td>
 <td style="text-align:right;">
-91.82422
+118.8525
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
-48.07
+52.66
 </td>
 <td style="text-align:right;background-color: #FDFD97 !important;">
 3
 </td>
 <td style="text-align:left;">
-POINT (4195550 3274750)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-1.9394303
-</td>
-<td style="text-align:right;">
-45.49282
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-49.80
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-3
-</td>
-<td style="text-align:left;">
-POINT (4236150 2965950)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-1.2884648
-</td>
-<td style="text-align:right;">
-64.53935
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-51.50
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-3
-</td>
-<td style="text-align:left;">
-POINT (4245850 2999250)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
--1.5489180
-</td>
-<td style="text-align:right;">
-82.19278
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-46.00
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-2
-</td>
-<td style="text-align:left;">
-POINT (4551950 3450750)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2.1210585
-</td>
-<td style="text-align:right;">
-120.38008
-</td>
-<td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
-…
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-51.00
-</td>
-<td style="text-align:right;background-color: #FDFD97 !important;">
-3
-</td>
-<td style="text-align:left;">
-POINT (4108150 2993150)
+POINT (4317950 2962750)
 </td>
 </tr>
 </tbody>
@@ -1109,7 +1110,7 @@ POINT (4108150 2993150)
 </div>
 <div id="joining-100m-attributes" class="section level2">
 <h2>Joining 100m attributes</h2>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>df_joined &lt;-<span class="st"> </span><span class="kw">z11_simple_join_100m_attribute</span>(df, <span class="st">&quot;inspire100m&quot;</span>, <span class="dt">data_source =</span> con, </span>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>df_joined &lt;-<span class="st"> </span><span class="kw">z11_simple_join_100m_attribute</span>(df, inspire100m, <span class="dt">data_source =</span> con, </span>
 <span id="cb20-2"><a href="#cb20-2"></a>  <span class="dt">attributes =</span> <span class="kw">c</span>(<span class="st">&quot;DEM_RELIGION_KURZ_1&quot;</span>, <span class="st">&quot;DEM_RELIGION_KURZ_2&quot;</span>))</span>
 <span id="cb20-3"><a href="#cb20-3"></a><span class="co">#&gt; Prepare for joining...</span></span>
 <span id="cb20-4"><a href="#cb20-4"></a><span class="co">#&gt; Join data...</span></span>
@@ -1140,50 +1141,50 @@ geometry
 <tbody>
 <tr>
 <td style="text-align:right;">
--0.2244639
+-0.4174479
 </td>
 <td style="text-align:right;">
-126.88084
+111.6800
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-4
+44
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-3
+19
 </td>
 <td style="text-align:left;">
-POINT (4137550 3152850)
+POINT (4053850 3117650)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--0.9229896
+-0.4518388
 </td>
 <td style="text-align:right;">
-91.82422
+103.4315
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-3
+32
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-NA
+18
 </td>
 <td style="text-align:left;">
-POINT (4195550 3274750)
+POINT (4079750 3102550)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-1.9394303
+-0.5202282
 </td>
 <td style="text-align:right;">
-45.49282
+111.9699
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
@@ -1192,38 +1193,38 @@ POINT (4195550 3274750)
 6
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-30
+NA
 </td>
 <td style="text-align:left;">
-POINT (4236150 2965950)
+POINT (4142950 3321050)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-1.2884648
+-0.3452813
 </td>
 <td style="text-align:right;">
-64.53935
+152.8478
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-22
+31
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-19
+4
 </td>
 <td style="text-align:left;">
-POINT (4245850 2999250)
+POINT (4132250 3220150)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
--1.5489180
+-0.2811538
 </td>
 <td style="text-align:right;">
-82.19278
+66.7799
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
@@ -1232,30 +1233,30 @@ POINT (4245850 2999250)
 NA
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-13
+NA
 </td>
 <td style="text-align:left;">
-POINT (4551950 3450750)
+POINT (4523850 3429450)
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-2.1210585
+0.3868868
 </td>
 <td style="text-align:right;">
-120.38008
+118.8525
 </td>
 <td style="text-align:left;padding-right: 0.7em; padding-left: 0.7em;">
 …
+</td>
+<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
+31
 </td>
 <td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
 8
 </td>
-<td style="text-align:right;width: 4em; background-color: #FDFD97 !important;">
-NA
-</td>
 <td style="text-align:left;">
-POINT (4108150 2993150)
+POINT (4317950 2962750)
 </td>
 </tr>
 </tbody>
