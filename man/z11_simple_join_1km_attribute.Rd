@@ -2,9 +2,15 @@
 % Please edit documentation in R/z11_simple_join_1km_attribute.R
 \name{z11_simple_join_1km_attribute}
 \alias{z11_simple_join_1km_attribute}
+\alias{z11_simple_join_1km_attribute.DBIConnection}
+\alias{z11_simple_join_1km_attribute.default}
 \title{Simple join of data with census 1 km attributes}
 \usage{
 z11_simple_join_1km_attribute(df, inspire_column, data_source = NULL, attributes = NULL)
+
+\method{z11_simple_join_1km_attribute}{DBIConnection}(df, inspire_column, data_source, attributes)
+
+\method{z11_simple_join_1km_attribute}{default}(df, inspire_column, data_source, attributes)
 }
 \arguments{
 \item{df}{input data}
@@ -16,13 +22,12 @@ file path to the data location}
 attribute to be merged with the input data. If no attribute name is given,
 all available attributes will be merged.}
 
-\item{inspire_colum}{Character string for column name in input data
-containing the inspire ID}
+\item{inspire_colum}{Column name in input data containing the inspire ID}
 }
 \description{
 Merge input data with census 1 km data by simple matching of INSPIRE IDs
 }
 \examples{
-joined <- z11_simple_join_1km_attribute(df, "inspire_1km", con, c("Frauen_A", "Frauen_A_cat"))
+joined <- z11_simple_join_1km_attribute(df, inspire_1km, con, c("Frauen_A", "Frauen_A_cat"))
 
 }

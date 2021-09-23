@@ -27,14 +27,14 @@
 #' @export
 
 #Generic Function
-setGeneric("z11_get_1km_attribute",
-           function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
-             standardGeneric("z11_get_1km_attribute")
-           }
-)
+z11_get_1km_attribute <- function(
+  attribute, data_source, geometry = TRUE, as_raster = TRUE
+) UseMethod("z11_get_1km_attribute", data_source)
 
-setMethod("z11_get_1km_attribute",
-  signature(data_source = "DBIConnection"),
+# DBIConnection Method
+#' @rdname z11_get_1km_attribute
+#' @export
+z11_get_1km_attribute.DBIConnection <-
   function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
     # Get attribute from database
     message("Fetch attribute from database...")
@@ -58,12 +58,12 @@ setMethod("z11_get_1km_attribute",
     }
 
     return(requested_attribute)
-  }
-)
+}
 
 #Default Method
-setMethod("z11_get_1km_attribute",
-  signature(data_source = "ANY"),
+#' @rdname z11_get_1km_attribute
+#' @export
+z11_get_1km_attribute.default <-
   function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
 
     # Load data in session
@@ -96,5 +96,4 @@ setMethod("z11_get_1km_attribute",
     }
 
     return(requested_attribute)
-  }
-)
+}

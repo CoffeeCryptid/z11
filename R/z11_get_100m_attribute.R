@@ -27,15 +27,14 @@
 #' @export
 
 # Generic function
-setGeneric("z11_get_100m_attribute",
-           function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
-             standardGeneric("z11_get_100m_attribute")
-           }
-)
+z11_get_100m_attribute <-function(
+  attribute, data_source, geometry = TRUE, as_raster = TRUE
+  ) UseMethod("z11_get_100m_attribute", data_source)
 
 # Method for DBI Connection
-setMethod("z11_get_100m_attribute",
-  signature(data_source = "DBIConnection"),
+#' @rdname z11_get_100m_attribute
+#' @export
+z11_get_100m_attribute.DBIConnection <-
   function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
     # Get attribute from database
     message("Fetch attribute from database...")
@@ -64,12 +63,12 @@ setMethod("z11_get_100m_attribute",
     }
 
     return(requested_attribute)
-  }
-)
+}
 
 # Method for any class
-setMethod("z11_get_100m_attribute",
-  signature(data_source = "ANY"),
+#' @rdname z11_get_100m_attribute
+#' @export
+z11_get_100m_attribute.default <-
   function(attribute, data_source, geometry = TRUE, as_raster = TRUE) {
 
     # Load data in session
@@ -105,7 +104,4 @@ setMethod("z11_get_100m_attribute",
     }
 
     return(requested_attribute)
-  }
-)
-
-
+}

@@ -3,8 +3,7 @@
 #' Merge input data with census 100m data by simple matching of INSPIRE IDs
 #'
 #' @param df input data
-#' @param inspire_colum Character string for column name in input data
-#' containing the inspire ID
+#' @param inspire_colum Column name in input data containing the inspire ID
 #' @param data_source Either a DBI connection, or a character string containing a
 #' file path to the data location
 #' @param attributes A character or character vector containing the name of the Census
@@ -12,7 +11,7 @@
 #' all available attributes will be merged.
 #'
 #' @examples
-#' joined <- z11_simple_join_100m_attribute(df, "inspire_100m", con)
+#' joined <- z11_simple_join_100m_attribute(df, inspire_100m, con)
 #'
 #' @importFrom magrittr %>%
 #' @importFrom data.table data.table setDT setnames
@@ -20,18 +19,17 @@
 #' @importFrom dplyr select bind_cols
 #'
 #' @export
-
-# Generic function
-setGeneric("z11_simple_join_100m_attribute",
-           function(df, inspire_column, data_source = NULL, attributes = NULL) {
-             standardGeneric("z11_simple_join_100m_attribute")
-           }
-)
+z11_simple_join_100m_attribute <- function(
+  df, inspire_column, data_source = NULL, attributes = NULL
+) UseMethod("z11_simple_join_100m_attribute", data_source)
 
 # Method for DBI Connection
-setMethod("z11_simple_join_100m_attribute",
-  signature(data_source = "DBIConnection"),
+#' @rdname z11_simple_join_100m_attribute
+#' @export
+z11_simple_join_100m_attribute.DBIConnection <-
   function(df, inspire_column, data_source, attributes) {
+    inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_label()
+
     message("Prepare for joining...")
     input <- data.frame(Gitter_ID_100m = df[[inspire_column]])
 
@@ -41,12 +39,12 @@ setMethod("z11_simple_join_100m_attribute",
     if (is.null(attributes)) {
       #Join all 100m variables
       query <- 'SELECT * FROM temp
-      LEFT JOIN bevoelkerung100m USING ("Gitter_ID_100m")
-      LEFT JOIN demographie100m USING ("Gitter_ID_100m")
-      LEFT JOIN haushalte100m USING ("Gitter_ID_100m")
-      LEFT JOIN familien100m USING ("Gitter_ID_100m")
-      LEFT JOIN gebaeude100m USING ("Gitter_ID_100m")
-      LEFT JOIN wohnungen100m USING ("Gitter_ID_100m");'
+LEFT JOIN bevoelkerung100m USING ("Gitter_ID_100m")
+LEFT JOIN demographie100m USING ("Gitter_ID_100m")
+LEFT JOIN haushalte100m USING ("Gitter_ID_100m")
+LEFT JOIN familien100m USING ("Gitter_ID_100m")
+LEFT JOIN gebaeude100m USING ("Gitter_ID_100m")
+LEFT JOIN wohnungen100m USING ("Gitter_ID_100m");'
     } else {
       # Only join select 100m variables
       tables <- vapply(substring(attributes, 1, 3), FUN.VALUE =  character(1),
@@ -66,13 +64,15 @@ setMethod("z11_simple_join_100m_attribute",
     return(
       dplyr::bind_cols(df, output)
     )
-  }
-)
+}
 
 #Method for other classes
-setMethod("z11_simple_join_100m_attribute",
-  signature(data_source = "ANY"),
+#' @rdname z11_simple_join_100m_attribute
+#' @export
+z11_simple_join_100m_attribute.default <-
   function(df, inspire_column, data_source, attributes) {
+
+    inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_name()
 
     linked_data <- data.table(df)
 
@@ -93,6 +93,5 @@ setMethod("z11_simple_join_100m_attribute",
     }
 
     return(linked_data)
-  }
-)
+}
 

@@ -5,8 +5,7 @@
 #' @usage z11_simple_join_1km_attribute(df, inspire_column, data_source = NULL, attributes = NULL)
 #'
 #' @param df input data
-#' @param inspire_colum Character string for column name in input data
-#' containing the inspire ID
+#' @param inspire_colum Column name in input data containing the inspire ID
 #' @param data_source Either a DBI connection, or a character string containing a
 #' file path to the data location
 #' @param attributes A character or character vector containing the name of the Census
@@ -14,7 +13,7 @@
 #' all available attributes will be merged.
 #'
 #' @examples
-#' joined <- z11_simple_join_1km_attribute(df, "inspire_1km", con, c("Frauen_A", "Frauen_A_cat"))
+#' joined <- z11_simple_join_1km_attribute(df, inspire_1km, con, c("Frauen_A", "Frauen_A_cat"))
 #'
 #' @importFrom magrittr %>%
 #' @importFrom data.table data.table setDT setnames
@@ -25,16 +24,17 @@
 
 #Generic function
 
-setGeneric("z11_simple_join_1km_attribute",
-           function(df, inspire_column, data_source = NULL, attributes = NULL) {
-             standardGeneric("z11_simple_join_1km_attribute")
-           }
-)
+z11_simple_join_1km_attribute <- function(
+  df, inspire_column, data_source = NULL, attributes = NULL
+  ) UseMethod("z11_simple_join_1km_attribute", data_source)
 
 # Method for DBI Connections
-setMethod("z11_simple_join_1km_attribute",
-  signature(data_source = "DBIConnection"),
+#' @rdname z11_simple_join_1km_attribute
+#' @export
+z11_simple_join_1km_attribute.DBIConnection <-
   function(df, inspire_column, data_source, attributes) {
+    inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_label()
+
     message("Prepare for joining...")
     input <- data.frame(Gitter_ID_1km = df[[inspire_column]])
 
@@ -64,13 +64,14 @@ setMethod("z11_simple_join_1km_attribute",
     return(
       dplyr::bind_cols(df, output)
     )
-  }
-)
+}
 
 # Default method
-setMethod("z11_simple_join_1km_attribute",
-  signature(data_source = "ANY"),
+#' @rdname z11_simple_join_1km_attribute
+#' @export
+z11_simple_join_1km_attribute.default <-
   function(df, inspire_column, data_source, attributes) {
+    inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_label()
 
     linked_data <- df
 
@@ -88,5 +89,4 @@ setMethod("z11_simple_join_1km_attribute",
     }
 
     return(linked_data)
-  }
-)
+}

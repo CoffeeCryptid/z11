@@ -2,9 +2,25 @@
 % Please edit documentation in R/z11_get_1km_attribute.R
 \name{z11_get_1km_attribute}
 \alias{z11_get_1km_attribute}
+\alias{z11_get_1km_attribute.DBIConnection}
+\alias{z11_get_1km_attribute.default}
 \title{Retrieve 1km^2 attribute of the German Census 2011}
 \usage{
 z11_get_1km_attribute(attribute, data_source, geometry = TRUE, as_raster = TRUE)
+
+\method{z11_get_1km_attribute}{DBIConnection}(
+  attribute,
+  data_source,
+  geometry = TRUE,
+  as_raster = TRUE
+)
+
+\method{z11_get_1km_attribute}{default}(
+  attribute,
+  data_source,
+  geometry = TRUE,
+  as_raster = TRUE
+)
 }
 \arguments{
 \item{attribute}{attribute name as definded in

@@ -2,9 +2,25 @@
 % Please edit documentation in R/z11_get_100m_attribute.R
 \name{z11_get_100m_attribute}
 \alias{z11_get_100m_attribute}
+\alias{z11_get_100m_attribute.DBIConnection}
+\alias{z11_get_100m_attribute.default}
 \title{Retrieve 1 hectare attribute of the German Census 2011}
 \usage{
 z11_get_100m_attribute(attribute, data_source, geometry = TRUE, as_raster = TRUE)
+
+\method{z11_get_100m_attribute}{DBIConnection}(
+  attribute,
+  data_source,
+  geometry = TRUE,
+  as_raster = TRUE
+)
+
+\method{z11_get_100m_attribute}{default}(
+  attribute,
+  data_source,
+  geometry = TRUE,
+  as_raster = TRUE
+)
 }
 \arguments{
 \item{attribute}{attribute name as definded in
