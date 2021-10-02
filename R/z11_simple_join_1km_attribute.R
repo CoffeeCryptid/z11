@@ -32,11 +32,11 @@ z11_simple_join_1km_attribute <- function(
 #' @rdname z11_simple_join_1km_attribute
 #' @export
 z11_simple_join_1km_attribute.DBIConnection <-
-  function(df, inspire_column, data_source, attributes) {
+  function(df, inspire_column, data_source, attributes = NULL) {
     inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_label()
 
     message("Prepare for joining...")
-    input <- data.frame(Gitter_ID_1km = df[[inspire_column]])
+    input <- data.frame(Gitter_ID_1km = df[[inspire_column]], order_id = 1:nrow(df))
 
     DBI::dbWriteTable(data_source, "temp", input, temporary = TRUE, overwrite = TRUE)
 
@@ -45,19 +45,20 @@ z11_simple_join_1km_attribute.DBIConnection <-
       #Join all 1km variables
       query <- 'SELECT * from temp
       LEFT JOIN spitz1km USING ("Gitter_ID_1km")
-      LEFT JOIN klassiert1km USING ("Gitter_ID_1km");'
+      LEFT JOIN klassiert1km USING ("Gitter_ID_1km")
+      ORDER BY order_id;'
     } else {
       #Only join select 1km variables
       tables <- ifelse(grepl("\\_cat$", attributes), "klassiert1km", "spitz1km")
       tables_query <- paste("LEFT JOIN", unique(tables), 'USING ("Gitter_ID_1km")',
                             sep = " ", collapse = "\n")
       vars_query <- paste(attributes, collapse = '", "')
-      query <- sprintf('SELECT "Gitter_ID_1km", "%s" from temp %s;', vars_query, tables_query)
+      query <- sprintf('SELECT "Gitter_ID_1km", "%s", "order_id" from temp %s ORDER BY order_id;', vars_query, tables_query)
     }
 
     res <- DBI::dbSendQuery(data_source, query)
     output <- DBI::dbFetch(res) %>%
-      dplyr::select(-Gitter_ID_1km)
+      dplyr::select(-Gitter_ID_1km, -order_id)
     DBI::dbClearResult(res)
 
     message("Done!")
@@ -70,7 +71,7 @@ z11_simple_join_1km_attribute.DBIConnection <-
 #' @rdname z11_simple_join_1km_attribute
 #' @export
 z11_simple_join_1km_attribute.default <-
-  function(df, inspire_column, data_source, attributes) {
+  function(df, inspire_column, data_source, attributes = NULL) {
     inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_label()
 
     linked_data <- df

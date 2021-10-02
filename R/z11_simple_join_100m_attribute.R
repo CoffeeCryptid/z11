@@ -27,11 +27,11 @@ z11_simple_join_100m_attribute <- function(
 #' @rdname z11_simple_join_100m_attribute
 #' @export
 z11_simple_join_100m_attribute.DBIConnection <-
-  function(df, inspire_column, data_source, attributes) {
+  function(df, inspire_column, data_source, attributes = NULL) {
     inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_label()
 
     message("Prepare for joining...")
-    input <- data.frame(Gitter_ID_100m = df[[inspire_column]])
+    input <- data.frame(Gitter_ID_100m = df[[inspire_column]], order_id = 1:nrow(df))
 
     DBI::dbWriteTable(data_source, "temp", input, temporary = TRUE, overwrite = TRUE)
 
@@ -44,7 +44,8 @@ LEFT JOIN demographie100m USING ("Gitter_ID_100m")
 LEFT JOIN haushalte100m USING ("Gitter_ID_100m")
 LEFT JOIN familien100m USING ("Gitter_ID_100m")
 LEFT JOIN gebaeude100m USING ("Gitter_ID_100m")
-LEFT JOIN wohnungen100m USING ("Gitter_ID_100m");'
+LEFT JOIN wohnungen100m USING ("Gitter_ID_100m")
+ORDER BY order_id;'
     } else {
       # Only join select 100m variables
       tables <- vapply(substring(attributes, 1, 3), FUN.VALUE =  character(1),
@@ -52,12 +53,12 @@ LEFT JOIN wohnungen100m USING ("Gitter_ID_100m");'
                                           FAM = "familien100m", GEB = "gebaeude100m", WOH = "wohnungen100m"))
       tables_query <- paste("LEFT JOIN", unique(tables), 'USING ("Gitter_ID_100m")', sep = " ", collapse = "\n")
       vars_query <- paste(attributes, collapse = '", "')
-      query <- sprintf('SELECT "Gitter_ID_100m", "%s" FROM temp %s;', vars_query, tables_query)
+      query <- sprintf('SELECT "Gitter_ID_100m", "%s", "order_id" FROM temp %s ORDER BY order_id;', vars_query, tables_query)
     }
 
     res <- DBI::dbSendQuery(data_source, query)
     output <- DBI::dbFetch(res) %>%
-      dplyr::select(-Gitter_ID_100m)
+      dplyr::select(-Gitter_ID_100m, -order_id)
     DBI::dbClearResult(res)
 
     message("Done!")
@@ -70,7 +71,7 @@ LEFT JOIN wohnungen100m USING ("Gitter_ID_100m");'
 #' @rdname z11_simple_join_100m_attribute
 #' @export
 z11_simple_join_100m_attribute.default <-
-  function(df, inspire_column, data_source, attributes) {
+  function(df, inspire_column, data_source, attributes = NULL) {
 
     inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_name()
 

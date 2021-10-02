@@ -47,21 +47,20 @@ z11_get_100m_attribute.DBIConnection <-
     DBI::dbClearResult(res)
 
     # Extract coordinates from inspire ID
-    message("Extract coordinates from inspire ID...")
-    requested_attribute <- requested_attribute %>%
-      dplyr::bind_cols(
-        z11_extract_inspire_coordinates(.$Gitter_ID_100m)
-      ) %>%
-      sf::st_as_sf(coords = c("X", "Y"), crs = 3035)
-
-    #Transform to raster
-    if (isTRUE(as_raster)) {
-      message("Transform to raster...")
+    if (isTRUE(geometry)) {
       requested_attribute <- requested_attribute %>%
-        stars::st_rasterize(dx = 100, dy = 100) %>%
-        as("Raster")
-    }
+        dplyr::bind_cols(
+          z11_extract_inspire_coordinates(.$Gitter_ID_100m)
+        ) %>%
+        sf::st_as_sf(coords = c("X", "Y"), crs = 3035)
 
+      #Transform to raster
+      if (isTRUE(as_raster)) {
+        requested_attribute <- requested_attribute %>%
+          stars::st_rasterize(dx = 100, dy = 100) %>%
+          as("Raster")
+      }
+    }
     return(requested_attribute)
 }
 
