@@ -42,7 +42,7 @@ z11_get_100m_attribute.DBIConnection <-
                     Ein = "bevoelkerung100m", DEM = "demographie100m", HAU = "haushalte100m",
                     FAM = "familien100m", GEB = "gebaeude100m", WOH = "wohnungen100m")
     query <- sprintf('SELECT "Gitter_ID_100m", "%s" FROM %s WHERE "%s" IS NOT NULL;', attribute, table, attribute)
-    res <- DBI::dbSendQuery(con, query)
+    res <- DBI::dbSendQuery(data_source, query)
     requested_attribute <- DBI::dbFetch(res)
     DBI::dbClearResult(res)
 
