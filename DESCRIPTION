@@ -1,7 +1,7 @@
 Package: z11
 Type: Package
 Title: R Interface to the German Census 2011 Raster Data
-Version: 0.2.0
+Version: 0.1.0
 Authors@R: person("Stefan", "Jünger", email = "stefan.juenger@gesis.org",
                   role = c("aut", "cre"))   
 Maintainer: Stefan Jünger <stefan.juenger@gesis.org>
@@ -34,12 +34,10 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-	kableExtra,
-	devtools
+	kableExtra
 VignetteBuilder: 
 	knitr,
     rmarkdown,
-	kableExtra,
-	devtools
+	kableExtra
 RoxygenNote: 7.1.1
 Config/testthat/edition: 3
