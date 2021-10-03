@@ -9,6 +9,7 @@
 #' @export
 #'
 #' @importFrom magrittr %>%
+#' @importFrom tibble tibble
 z11_extract_inspire_coordinates <- function (inspire_ids) {
 
   if (grepl("1km", inspire_ids[1])) {

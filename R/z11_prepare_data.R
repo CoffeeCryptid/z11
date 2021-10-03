@@ -39,19 +39,21 @@ z11_prepare_data <- function(file, data_location) {
     }
 
   } else if (file.exists(file)) {
-    z11_prepare_datafile(file, data_location)
+    z11_prepare_file(file, data_location)
   } else {
     stop("Not a valid file or directory!")
   }
 }
 
 #' @export
+#' @noRd
 z11_prepare_file <- function(file, data_location) {
   UseMethod("z11_prepare_file", data_location)
 }
 
 # Method: character
 #' @export
+#' @noRd
 z11_prepare_file.character <- function(file, data_location) {
   #Read data
   message("Reading file...")
@@ -128,6 +130,7 @@ z11_prepare_file.character <- function(file, data_location) {
 
 #Method: DBI Connection
 #' @export
+#' @noRd
 z11_prepare_file.DBIConnection <- function(file, data_location) {
   #Read data
   message("Reading file...")
@@ -169,7 +172,7 @@ z11_prepare_file.DBIConnection <- function(file, data_location) {
     # 1km data
 
     message("    Select and rename columns")
-    df <- df[,.SD, .SDcols = !c('x_mp_1km', 'y_mp_1km')]
+    df <- df[, .SD, .SDcols = !c('x_mp_1km', 'y_mp_1km')]
     name <- "spitz1km"
     if (df[Wohnfl_Whg_D >= 0, .N] > 100000) {
       colns <- colnames(df)
@@ -191,3 +194,7 @@ z11_prepare_file.DBIConnection <- function(file, data_location) {
   message("Cleaning up...")
   rm(df)
 }
+
+utils::globalVariables(c("Gitter_ID_100m", ".", ".SD", ".N",
+                         "Wohnfl_Whg_D", "Gitter_ID_1km", "merkm",
+                         "Merkmal", "Auspraegung_Code", "Einwohner"))

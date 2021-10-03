@@ -14,13 +14,16 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom dplyr arrange mutate select
+#' @importFrom rlang .data
+#' @importFrom tidyfast dt_pivot_wider
+#' @importFrom data.table as.data.table
 z11_wide_100m <- function (x) {
   x %>%
     dplyr::arrange(Gitter_ID_100m) %>%
     # dplyr::filter(Merkmal != " INSGESAMT") %>% #, Anzahl_q != 1) %>%
-    dplyr::mutate(merk_code = paste0(Merkmal, "_", Auspraegung_Code)) %>%
-    dplyr::select(Gitter_ID_100m, merk_code, Anzahl) %>%
+    dplyr::mutate(merk_code = paste0(.data$Merkmal, "_", .data$Auspraegung_Code)) %>%
+    dplyr::select(Gitter_ID_100m, .data$merk_code, .data$Anzahl) %>%
     data.table::as.data.table() %>%
-    tidyfast::dt_pivot_wider(names_from = merk_code, values_from = Anzahl)
+    tidyfast::dt_pivot_wider(names_from = .data$merk_code, values_from = .data$Anzahl)
     # tidyr::pivot_wider(., names_from = merk_code, values_from = Anzahl)
 }

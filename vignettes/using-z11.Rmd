@@ -31,7 +31,7 @@ Generally, the German Census 2011 data are available under a [Data licence Germa
 
 # Installing and Loading the Package
 
-```{r install-library, eval = FALSE}
+```{r install-library}
 remotes::install_github("StefanJuenger/z11")
 ```
 

@@ -13,6 +13,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom sf st_coordinates st_transform st_crs
 #' @importFrom purrr map_dfc
+#' @importFrom tibble as_tibble
 #'
 #' @export
 
@@ -69,3 +70,5 @@ get_inspire_id <- function(type, coordinate_pairs) {
     stop("Not a valid type!")
   }
 }
+
+utils::globalVariables(c(":="))

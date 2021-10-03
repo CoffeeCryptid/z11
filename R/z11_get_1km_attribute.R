@@ -21,6 +21,7 @@
 #' @importFrom stars st_rasterize
 #' @importFrom dplyr bind_cols
 #' @importFrom DBI dbSendQuery dbFetch dbClearResult
+#' @importFrom methods as
 #'
 #' @export
 
@@ -51,7 +52,7 @@ z11_get_1km_attribute.DBIConnection <-
       #Transform to raster
       if (isTRUE(as_raster)) {
         requested_attribute <- stars::st_rasterize(requested_attribute, dx = 1000, dy = 1000) %>%
-          as("Raster")
+          methods::as("Raster")
       }
     }
 
@@ -89,9 +90,11 @@ z11_get_1km_attribute.default <-
       #Transform to raster
       if (isTRUE(as_raster)) {
         requested_attribute <- stars::st_rasterize(requested_attribute, dx = 1000, dy = 1000) %>%
-          as("Raster")
+          methods::as("Raster")
       }
     }
 
     return(requested_attribute)
 }
+
+utils::globalVariables(c("."))

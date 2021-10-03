@@ -17,6 +17,7 @@
 #' @importFrom data.table data.table setDT setnames
 #' @importFrom DBI dbWriteTable dbSendQuery dbFetch dbClearResult
 #' @importFrom dplyr select bind_cols
+#' @importFrom rlang .data enquo as_label
 #'
 #' @export
 z11_simple_join_100m_attribute <- function(
@@ -58,7 +59,7 @@ ORDER BY order_id;'
 
     res <- DBI::dbSendQuery(data_source, query)
     output <- DBI::dbFetch(res) %>%
-      dplyr::select(-Gitter_ID_100m, -order_id)
+      dplyr::select(-.data$Gitter_ID_100m, -.data$order_id)
     DBI::dbClearResult(res)
 
     message("Done!")
@@ -73,7 +74,7 @@ ORDER BY order_id;'
 z11_simple_join_100m_attribute.default <-
   function(df, inspire_column, data_source, attributes = NULL) {
 
-    inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_name()
+    inspire_column <- rlang::enquo(inspire_column) %>% rlang::as_label()
 
     linked_data <- data.table(df)
 

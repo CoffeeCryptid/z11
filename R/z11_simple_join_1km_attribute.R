@@ -20,6 +20,7 @@
 #' @importFrom data.table data.table setDT setnames
 #' @importFrom DBI dbWriteTable dbSendQuery dbFetch dbClearResult
 #' @importFrom dplyr select bind_cols
+#' @importFrom rlang .data enquo as_label
 #'
 #' @export
 
@@ -59,7 +60,7 @@ z11_simple_join_1km_attribute.DBIConnection <-
 
     res <- DBI::dbSendQuery(data_source, query)
     output <- DBI::dbFetch(res) %>%
-      dplyr::select(-Gitter_ID_1km, -order_id)
+      dplyr::select(-.data$Gitter_ID_1km, -.data$order_id)
     DBI::dbClearResult(res)
 
     message("Done!")
@@ -92,3 +93,5 @@ z11_simple_join_1km_attribute.default <-
 
     return(linked_data)
 }
+
+utils::globalVariables(c("order"))

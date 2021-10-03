@@ -15,7 +15,7 @@ test_that("retrieved 100m attribute is raster", {
 })
 
 # Retrieve 1km attribute, no raster
-test_that("retrieved 1km attribute has correct class and shape", {
+test_that("retrieved 1km attribute (no raster) has correct class and shape", {
   suppressMessages(df <- z11_get_1km_attribute("Frauen_A", src, geometry = TRUE, as_raster = FALSE))
   expect_s3_class(df, "data.frame") #Result is of class data.frame
   expect_equal(ncol(df), 3) #Data frame has three columns
@@ -24,7 +24,7 @@ test_that("retrieved 1km attribute has correct class and shape", {
   expect_vector(df[[2]], ptype = double()) #Check if attribute is double
 })
 
-test_that("retrieved 100m attribute has correct class and shape", {
+test_that("retrieved 100m attribute (no raster) has correct class and shape", {
   suppressMessages(df <- z11_get_100m_attribute("DEM_ALTER_10JG_1", src, geometry = TRUE, as_raster = FALSE))
   expect_s3_class(df, "data.frame") #Result is of class data.frame
   expect_equal(ncol(df), 3) #Data frame has three columns

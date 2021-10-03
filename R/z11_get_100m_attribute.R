@@ -21,6 +21,7 @@
 #' @importFrom stars st_rasterize
 #' @importFrom dplyr bind_cols
 #' @importFrom DBI dbSendQuery dbFetch dbClearResult
+#' @importFrom methods as
 #'
 #' @export
 
@@ -56,7 +57,7 @@ z11_get_100m_attribute.DBIConnection <-
       if (isTRUE(as_raster)) {
         requested_attribute <- requested_attribute %>%
           stars::st_rasterize(dx = 100, dy = 100) %>%
-          as("Raster")
+          methods::as("Raster")
       }
     }
     return(requested_attribute)
@@ -96,9 +97,11 @@ z11_get_100m_attribute.default <-
       if (isTRUE(as_raster)) {
         requested_attribute <- requested_attribute %>%
           stars::st_rasterize(dx = 100, dy = 100) %>%
-          as("Raster")
+          methods::as("Raster")
       }
     }
 
     return(requested_attribute)
 }
+
+utils::globalVariables(c("."))
