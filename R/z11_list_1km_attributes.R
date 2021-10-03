@@ -14,7 +14,7 @@
 #' @export
 z11_list_1km_attributes <- function() {
   system.file("extdata", "index_1km", package = "z11") %>%
-    readr::read_lines()
+    readLines()
   # system.file("extdata", "z11_attributes_1km.rds", package = "z11") %>%
   #   readRDS()  %>%
   #   sf::st_drop_geometry() %>%
@@ -23,8 +23,8 @@ z11_list_1km_attributes <- function() {
 }
 
 #z11_list_1km_attributes_db <- function(con) {
-#  lapply(c("spitz1km", "klassiert1km"), 
-#         function(x) DBI::dbListFields(con, x)) %>% 
+#  lapply(c("spitz1km", "klassiert1km"),
+#         function(x) DBI::dbListFields(con, x)) %>%
 #    unlist() %>%
 #    subset(., . != "Gitter_ID_1km")
 #}
