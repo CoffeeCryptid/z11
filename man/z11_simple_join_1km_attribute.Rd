@@ -8,9 +8,19 @@
 \usage{
 z11_simple_join_1km_attribute(df, inspire_column, data_source = NULL, attributes = NULL)
 
-\method{z11_simple_join_1km_attribute}{DBIConnection}(df, inspire_column, data_source, attributes)
+\method{z11_simple_join_1km_attribute}{DBIConnection}(
+  df,
+  inspire_column,
+  data_source,
+  attributes = NULL
+)
 
-\method{z11_simple_join_1km_attribute}{default}(df, inspire_column, data_source, attributes)
+\method{z11_simple_join_1km_attribute}{default}(
+  df,
+  inspire_column,
+  data_source,
+  attributes = NULL
+)
 }
 \arguments{
 \item{df}{input data}

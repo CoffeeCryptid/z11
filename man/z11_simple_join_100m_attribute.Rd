@@ -13,9 +13,19 @@ z11_simple_join_100m_attribute(
   attributes = NULL
 )
 
-\method{z11_simple_join_100m_attribute}{DBIConnection}(df, inspire_column, data_source, attributes)
+\method{z11_simple_join_100m_attribute}{DBIConnection}(
+  df,
+  inspire_column,
+  data_source,
+  attributes = NULL
+)
 
-\method{z11_simple_join_100m_attribute}{default}(df, inspire_column, data_source, attributes)
+\method{z11_simple_join_100m_attribute}{default}(
+  df,
+  inspire_column,
+  data_source,
+  attributes = NULL
+)
 }
 \arguments{
 \item{df}{input data}

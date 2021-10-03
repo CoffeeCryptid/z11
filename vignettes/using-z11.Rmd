@@ -1,6 +1,6 @@
 ---
 title: "Quick Start in Using the z11 package"
-author: "Stefan Jünger, Sarah Thiesen"
+author: "Stefan Jünger"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
