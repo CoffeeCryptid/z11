@@ -4,9 +4,15 @@
 #'
 #' @param data Object of class ```sf``` containing point geometries
 #' @param type Character string for the requested ID type
+#' @param column_name Name that the newly created INSPIRE ID column should have,
+#' as a character string
+#' @param combine Should the inspire ID be appended to the dataset?
+#' Defaults to FALSE.
 #' @return tibble
 #'
 #' @importFrom magrittr %>%
+#' @importFrom sf st_coordinates st_transform st_crs
+#' @importFrom purrr map_dfc
 #'
 #' @export
 
@@ -29,7 +35,13 @@ z11_create_inspire_ids <- function(
   id_name <- glue::glue("{column_name}{type}")
   names(type) <- id_name
 
-  inspire <- purrr::map_dfc(type, z11::get_inspire_id, coordinate_pairs = coordinate_pairs)
+  if (length(type) == 2) {
+    inspire <- purrr::map_dfc(type, get_inspire_id, coordinate_pairs = coordinate_pairs)
+  } else if (length(type) == 1) {
+    inspire <- get_inspire_id(type, coordinate_pairs)
+  } else {
+    stop("Invalid type")
+  }
 
   if (isTRUE(combine)) {
     return(
@@ -42,14 +54,16 @@ z11_create_inspire_ids <- function(
 
 get_inspire_id <- function(type, coordinate_pairs) {
   if (type == "1km") {
-    glue::glue(
-      "1kmN{substr(coordinate_pairs$Y %>% as.character(), 1, 4)}",
-      "E{substr(coordinate_pairs$X %>% as.character(), 1, 4)}"
+    sprintf(
+      "1kmN%sE%s",
+      substr(coordinate_pairs$Y %>% as.character(), 1, 4),
+      substr(coordinate_pairs$X %>% as.character(), 1, 4)
     ) %>% as.character()
   } else if (type == "100m") {
-    glue::glue(
-      "100mN{substr(coordinate_pairs$Y %>% as.character(), 1, 5)}",
-      "E{substr(coordinate_pairs$X %>% as.character(), 1, 5)}"
+    sprintf(
+      "100mN%sE%s",
+      substr(coordinate_pairs$Y %>% as.character(), 1, 5),
+      substr(coordinate_pairs$X %>% as.character(), 1, 5)
     ) %>% as.character()
   } else {
     stop("Not a valid type!")

@@ -1,23 +1,26 @@
 #' Data Preparation
 #'
 #' @description
-#' Reads in 2011 Census .csv files, splits it into smaller chunks, and saves it locally.
+#' Reads in 2011 Census .csv files, splits it into smaller chunks, and saves it
+#' locally.
 #'
-#' @usage
-#' z11_prepare_data(file, data_location)
-#'
-#' @param file Path to a either a census .csv file or a directory where the .csv files are saved
-#' @param data_location A DBI connection or a character string containing a path to the directory where the data should be saved.
+#' @param file Path to a either a census .csv file or a directory where the
+#' .csv files are saved
+#' @param data_location A DBI connection or a character string containing a path
+#' to the directory where the data should be saved.
 #'
 #' @details
-#' The data files are very large and use a lot of RAM, so use with caution. Don't run other things in the background.
+#' The data files are very large and use a lot of RAM, so use with caution.
+#' Don't run other things in the background.
 #'
 #' @examples
+#' \dontrun{
 #' z11_prepare_data("/home/yourname/Haushalte100m.csv", "/home/yourname/z11data")
 #'
 #' con <- DBI::dbConnect(RSQLite::SQLite(), "/home/yourname/z11data.sqlite3")
 #' z11_prepare_data("/home/yourname/census_data", con)
 #' DBI::dbDisconnect(con)
+#' }
 #'
 #' @importFrom purrr walk
 #' @importFrom magrittr %>%

@@ -13,6 +13,7 @@
 #' @noRd
 #'
 #' @importFrom magrittr %>%
+#' @importFrom dplyr arrange mutate select
 z11_wide_100m <- function (x) {
   x %>%
     dplyr::arrange(Gitter_ID_100m) %>%

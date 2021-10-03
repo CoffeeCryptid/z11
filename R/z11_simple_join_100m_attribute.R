@@ -3,15 +3,15 @@
 #' Merge input data with census 100m data by simple matching of INSPIRE IDs
 #'
 #' @param df input data
-#' @param inspire_colum Column name in input data containing the inspire ID
-#' @param data_source Either a DBI connection, or a character string containing a
-#' file path to the data location
-#' @param attributes A character or character vector containing the name of the Census
-#' attribute to be merged with the input data. If no attribute name is given,
-#' all available attributes will be merged.
+#' @param inspire_column Column name in input data containing the inspire ID
+#' @param data_source Either a DBI connection, or a character string containing
+#' a file path to the data location
+#' @param attributes A character or character vector containing the name of the
+#' Census attribute to be merged with the input data. If no attribute name is
+#' given, all available attributes will be merged.
 #'
 #' @examples
-#' joined <- z11_simple_join_100m_attribute(df, inspire_100m, con)
+#' \dontrun{joined <- z11_simple_join_100m_attribute(df, inspire_100m, con)}
 #'
 #' @importFrom magrittr %>%
 #' @importFrom data.table data.table setDT setnames

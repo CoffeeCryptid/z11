@@ -6,7 +6,12 @@
 \alias{z11_get_1km_attribute.default}
 \title{Retrieve 1km^2 attribute of the German Census 2011}
 \usage{
-z11_get_1km_attribute(attribute, data_source, geometry = TRUE, as_raster = TRUE)
+z11_get_1km_attribute(
+  attribute,
+  data_source,
+  geometry = TRUE,
+  as_raster = TRUE
+)
 
 \method{z11_get_1km_attribute}{DBIConnection}(
   attribute,

@@ -4,7 +4,7 @@
 \alias{z11_download_data}
 \title{Download Census 2011 data}
 \usage{
-z11_get_data(name, directory, all = FALSE)
+z11_download_data(directory)
 }
 \arguments{
 \item{directory}{Path to the directory where the data should be saved.}
@@ -13,9 +13,11 @@ z11_get_data(name, directory, all = FALSE)
 Downloads Census 2011 data, unzips it and saves it to a local folder
 }
 \details{
-This function uses a bash command to unzip the files, since they are too large for R's unzip function. If you're on Windows or Mac, download and unzip the data manually instead.
+This function uses a bash command to unzip the files, since they are too
+large for R's unzip function.
+If you're on Windows or Mac, download and unzip the data manually instead.
 }
 \examples{
-z11_download_data("/home/yourname/z11data")
+\dontrun{z11_download_data("/home/yourname/z11data")}
 
 }

@@ -6,7 +6,12 @@
 \alias{z11_simple_join_1km_attribute.default}
 \title{Simple join of data with census 1 km attributes}
 \usage{
-z11_simple_join_1km_attribute(df, inspire_column, data_source = NULL, attributes = NULL)
+z11_simple_join_1km_attribute(
+  df,
+  inspire_column,
+  data_source = NULL,
+  attributes = NULL
+)
 
 \method{z11_simple_join_1km_attribute}{DBIConnection}(
   df,
@@ -25,19 +30,22 @@ z11_simple_join_1km_attribute(df, inspire_column, data_source = NULL, attributes
 \arguments{
 \item{df}{input data}
 
-\item{data_source}{Either a DBI connection, or a character string containing a
-file path to the data location}
+\item{inspire_column}{Column name in input data containing the inspire ID}
 
-\item{attributes}{A character or character vector containing the name of the Census
-attribute to be merged with the input data. If no attribute name is given,
-all available attributes will be merged.}
+\item{data_source}{Either a DBI connection, or a character string containing
+a file path to the data location}
 
-\item{inspire_colum}{Column name in input data containing the inspire ID}
+\item{attributes}{A character or character vector containing the name of the
+Census attribute to be merged with the input data.
+If no attribute name is given, all available attributes will be merged.}
 }
 \description{
 Merge input data with census 1 km data by simple matching of INSPIRE IDs
 }
 \examples{
-joined <- z11_simple_join_1km_attribute(df, inspire_1km, con, c("Frauen_A", "Frauen_A_cat"))
+\dontrun{
+joined <- z11_simple_join_1km_attribute(df, inspire_1km, con,
+  c("Frauen_A", "Frauen_A_cat"))
+}
 
 }

@@ -5,8 +5,6 @@
 #' (default) or you can return it as a `sf` tibble object with point
 #' geometries.
 #'
-#' @usage z11_get_100m_attribute(attribute, data_source, geometry = TRUE, as_raster = TRUE)
-#'
 #' @param attribute attribute name as definded in
 #' \code{z11::z11_list_100m_attributes}
 #' @param data_source Either a DBI connection or a character string containing

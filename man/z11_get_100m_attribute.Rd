@@ -6,7 +6,12 @@
 \alias{z11_get_100m_attribute.default}
 \title{Retrieve 1 hectare attribute of the German Census 2011}
 \usage{
-z11_get_100m_attribute(attribute, data_source, geometry = TRUE, as_raster = TRUE)
+z11_get_100m_attribute(
+  attribute,
+  data_source,
+  geometry = TRUE,
+  as_raster = TRUE
+)
 
 \method{z11_get_100m_attribute}{DBIConnection}(
   attribute,

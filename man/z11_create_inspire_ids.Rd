@@ -15,6 +15,12 @@ z11_create_inspire_ids(
 \item{data}{Object of class ```sf``` containing point geometries}
 
 \item{type}{Character string for the requested ID type}
+
+\item{column_name}{Name that the newly created INSPIRE ID column should have,
+as a character string}
+
+\item{combine}{Should the inspire ID be appended to the dataset?
+Defaults to FALSE.}
 }
 \value{
 tibble
