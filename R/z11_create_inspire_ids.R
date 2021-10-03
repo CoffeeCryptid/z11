@@ -32,10 +32,10 @@ z11_create_inspire_ids <- function(
     sf::st_coordinates() %>%
     tibble::as_tibble()
 
-  id_name <- glue::glue("{column_name}{type}")
-  names(type) <- id_name
+  id_name <- paste0(column_name, type)
 
   if (length(type) == 2) {
+    names(type) <- id_name
     inspire <- purrr::map_dfc(type, get_inspire_id, coordinate_pairs = coordinate_pairs)
   } else if (length(type) == 1) {
     inspire <- get_inspire_id(type, coordinate_pairs)
@@ -45,7 +45,7 @@ z11_create_inspire_ids <- function(
 
   if (isTRUE(combine)) {
     return(
-      dplyr::bind_cols(data, inspire)
+      dplyr::bind_cols(data, !!id_name[1] := inspire)
     )
   } else {
     return(inspire)
