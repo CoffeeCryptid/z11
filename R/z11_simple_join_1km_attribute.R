@@ -58,10 +58,8 @@ z11_simple_join_1km_attribute.DBIConnection <-
       query <- sprintf('SELECT "Gitter_ID_1km", "%s", "order_id" from temp %s ORDER BY order_id;', vars_query, tables_query)
     }
 
-    res <- DBI::dbSendQuery(data_source, query)
-    output <- DBI::dbFetch(res) %>%
+    output <- DBI::dbGetQuery(data_source, query) %>%
       dplyr::select(-.data$Gitter_ID_1km, -.data$order_id)
-    DBI::dbClearResult(res)
 
     message("Done!")
     return(

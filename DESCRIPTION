@@ -39,5 +39,5 @@ VignetteBuilder:
 	knitr,
     rmarkdown,
 	kableExtra
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Config/testthat/edition: 3

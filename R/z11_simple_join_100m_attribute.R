@@ -50,17 +50,21 @@ ORDER BY order_id;'
     } else {
       # Only join select 100m variables
       tables <- vapply(substring(attributes, 1, 3), FUN.VALUE =  character(1),
-                       function(x) switch(x, Ein = "bevoelkerung100m", DEM = "demographie100m", HAU = "haushalte100m",
-                                          FAM = "familien100m", GEB = "gebaeude100m", WOH = "wohnungen100m"))
+                       function(x) switch(x,
+                                          Ein = "bevoelkerung100m",
+                                          DEM = "demographie100m",
+                                          HAU = "haushalte100m",
+                                          FAM = "familien100m",
+                                          GEB = "gebaeude100m",
+                                          WOH = "wohnungen100m"))
+
       tables_query <- paste("LEFT JOIN", unique(tables), 'USING ("Gitter_ID_100m")', sep = " ", collapse = "\n")
       vars_query <- paste(attributes, collapse = '", "')
       query <- sprintf('SELECT "Gitter_ID_100m", "%s", "order_id" FROM temp %s ORDER BY order_id;', vars_query, tables_query)
     }
 
-    res <- DBI::dbSendQuery(data_source, query)
-    output <- DBI::dbFetch(res) %>%
+    output <- DBI::dbGetQuery(data_source, query) %>%
       dplyr::select(-.data$Gitter_ID_100m, -.data$order_id)
-    DBI::dbClearResult(res)
 
     message("Done!")
     return(
