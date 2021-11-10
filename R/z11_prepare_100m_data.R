@@ -42,7 +42,7 @@ prepare_100m_data_db <- function(data_location, file, table_name) {
 
   # Generate statement to transform to wide format
   var_subq <- vapply(vars, function(x)
-    sprintf("MAX(CASE WHEN \"Variable\" = '%s' THEN \"Anzahl\" ELSE NULL END) %s", x, x),
+    sprintf("MAX(CASE WHEN \"Variable\" = '%s' THEN \"Anzahl\" ELSE NULL END) \"%s\"", x, x),
     character(1)
   )
   statement <- sprintf('CREATE TABLE %s AS
